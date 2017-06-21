@@ -10,10 +10,16 @@
     "type": "git",
     "url": "git+https://github.com/aaronshappell/picabot.git"
   },
-  "author": "",
+  "author": "Aaron Shappell",
+  "contributors": [
+    {"name": "Dylan Thinnes"}
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/aaronshappell/picabot/issues"
   },
-  "homepage": "https://github.com/aaronshappell/picabot#readme"
+  "homepage": "https://github.com/aaronshappell/picabot#readme",
+  "dependencies": {
+    "discord.js": "^11.1.0"
+  }
 }
