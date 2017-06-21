@@ -20,6 +20,10 @@ var checkForCommand = function(message){
 }
 
 bot.on("ready", () => console.log("Bot ready!"));
+bot.on("disconnect", () => {
+    console.log("Disconnected!");
+    process.exit(1);
+});
 bot.on("guildMemberAdd", member => member.guild.defaultChannel.send(`Welcome to the server, ${member}!`));
 bot.on("message", message => checkForCommand(message));
 bot.on("messageUpdate", (oldMessage, newMessage) => checkForCommand(newMessage));
