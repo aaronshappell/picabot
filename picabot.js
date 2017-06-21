@@ -5,19 +5,19 @@ const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
 var commands = {
     "ping": {
         description: "Pings the bot",
-        process: function(message, parameters){
+        process: function(message, args){
             message.reply("Pong :ping_pong:");
         }
     },
     "bot": {
         description: "Tells you information about the bot",
-        process: function(message, parameters){
+        process: function(message, args){
             message.reply("I am a discord bot for didney worl who has an appetite for non-nutritive substances");
         }
     },
     "help": {
         description: "Gives you a list of commands you can use",
-        process: function(message, parameters){
+        process: function(message, args){
             message.reply("There is no help yet"); //show list of commands if no parameters otherwise show description
         }
     }
@@ -26,8 +26,9 @@ var commands = {
 var checkForCommand = function(message){
     if(!message.author.bot && message.content.startsWith("!")){
         var args = message.content.substring(1).split(" ");
+        var command = args.splice(0, 1);
         try{
-            commands[args[0]].process(message);
+            commands[command].process(message, args);
         } catch(e){
             message.reply("Sorry that isn't a command yet :sob:");
             message.channel.send("You can type `!help` to see a list of my commands");
