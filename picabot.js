@@ -1,4 +1,6 @@
 const Discord = require("discord.js");
+const fs = require("fs");
+
 const bot = new Discord.Client();
 const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
 
@@ -6,9 +8,9 @@ var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes d
 
 var commands = {
     "help": {
-        usage: "<command>",
-        description: "Gives you a list of commands you can use",
-        process: function(message, args){
+        "usage": "<command>",
+        "description": "Gives you a list of commands you can use",
+        "process": function(message, args){
             if(args.length === 0){
                 var commandKeys = Object.keys(commands);
                 var commandList = "";
@@ -30,23 +32,23 @@ var commands = {
         }
     },
     "bot": {
-        usage: "",
-        description: "Tells you information about the bot",
-        process: function(message, args){
+        "usage": "",
+        "description": "Tells you information about the bot",
+        "process": function(message, args){
             message.reply("I am a discord bot for didney worl who has an appetite for non-nutritive substances");
         }
     },
     "ping": {
-        usage: "",
-        description: "Pings the bot",
-        process: function(message, args){
+        "usage": "",
+        "description": "Pings the bot",
+        "process": function(message, args){
             message.reply("Pong :ping_pong:");
         }
     },
     "roll": {
-        usage: "<amount>d<sides>",
-        description: "Rolls a die",
-        process: function(message, args){
+        "usage": "<amount>d<sides>",
+        "description": "Rolls a die",
+        "process": function(message, args){
             var rolls = [];
             var die = "";
             if(args.length === 0){
@@ -55,7 +57,12 @@ var commands = {
             } else{
                 var amount = parseInt(args[0].split("d")[0]);
                 var sides = parseInt(args[0].split("d")[1]);
-                if(!Number.isInteger(amount) || !Number.isInteger(sides)){
+                var single = false;
+                if(args[0].substring(0, 1) === "d" && Number.isInteger(sides)){
+                    rolls.push(Math.floor(Math.random() * sides + 1));
+                    single = true;
+                }
+                if(!single && (!Number.isInteger(amount) || !Number.isInteger(sides))){
                     message.reply("That is not a valid die");
                     return;
                 }
@@ -77,16 +84,16 @@ var commands = {
         }
     },
     "8ball": {
-        usage: "",
-        description: "Asks a magic 8ball",
-        process: function(message, args){
+        "usage": "",
+        "description": "Asks a magic 8ball",
+        "process": function(message, args){
             message.reply(fortunes[Math.floor(Math.random() * fortunes.length)]);
         }
     },
     "insult": {
-        usage: "",
-        description: "Call the bot to your voice channel to deliver a special insult",
-        process: function(message, args){
+        "usage": "",
+        "description": "Call the bot to your voice channel to deliver a special insult",
+        "process": function(message, args){
             message.reply("There are currently no insults :sob:");
             if(!message.guild) return;
             if(message.member.voiceChannel){
@@ -99,16 +106,37 @@ var commands = {
         }
     },
     "save": {
-        usage: "",
-        description: "",
-        process: function(message, args){
-
+        "usage": "<key> <message>",
+        "description": "Saves a personalized message with a given name",
+        "process": function(message, args){
+            if(args.length === 0){
+                message.reply("Save a message with `!save <key> <message>`");
+                return;
+            }
+            var key = args[0];
+            var messageToSave = "";
+            for(var i = 0; i < args.length - 2; i++){
+                messageToSave += args[i + 1] + " ";
+            }
+            messageToSave += args[args.length - 1];
+            fs.readFile("save.json", "utf8", function(err, data){
+                if(err) throw err;
+                var save = JSON.parse(data);
+                if(save[message.author.username] === undefined){
+                    save[message.author.username] = {};
+                }
+                save[message.author.username][key] = messageToSave;
+                fs.writeFile("save.json", JSON.stringify(save), "utf8", function(err){
+                    if(err) throw err;
+                    message.reply(`Your message has been saved as ${key}! :tada:`);
+                });
+            });
         }
     },
     "recall": {
-        usage: "",
-        description: "",
-        process: function(message, args){
+        "usage": "<name>",
+        "description": "Recalls a personalized message with a given name",
+        "process": function(message, args){
             
         }
     }
