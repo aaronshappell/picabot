@@ -88,6 +88,28 @@ var commands = {
         description: "Call the bot to your voice channel to deliver a special insult",
         process: function(message, args){
             message.reply("There are currently no insults :sob:");
+            if(!message.guild) return;
+            if(message.member.voiceChannel){
+                message.member.voiceChannel.join().then(connection =>{
+                    message.reply("Connected to the channel");
+                }).catch(console.log);
+            } else{
+                message.reply("You need to join a voice channel first");
+            }
+        }
+    },
+    "save": {
+        usage: "",
+        description: "",
+        process: function(message, args){
+
+        }
+    },
+    "recall": {
+        usage: "",
+        description: "",
+        process: function(message, args){
+            
         }
     }
 };
