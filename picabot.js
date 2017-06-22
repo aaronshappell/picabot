@@ -3,18 +3,6 @@ const bot = new Discord.Client();
 const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
 
 var commands = {
-    "ping": {
-        description: "Pings the bot",
-        process: function(message, args){
-            message.reply("Pong :ping_pong:");
-        }
-    },
-    "bot": {
-        description: "Tells you information about the bot",
-        process: function(message, args){
-            message.reply("I am a discord bot for didney worl who has an appetite for non-nutritive substances");
-        }
-    },
     "help": {
         description: "Gives you a list of commands you can use",
         process: function(message, args){
@@ -30,6 +18,30 @@ var commands = {
                     }
                 }
             }
+        }
+    },
+    "bot": {
+        description: "Tells you information about the bot",
+        process: function(message, args){
+            message.reply("I am a discord bot for didney worl who has an appetite for non-nutritive substances");
+        }
+    },
+    "ping": {
+        description: "Pings the bot",
+        process: function(message, args){
+            message.reply("Pong :ping_pong:");
+        }
+    },
+    "roll": {
+        description: "Rolls a die",
+        process: function(message, args){
+            message.reply("No dice at the moment");
+        }
+    },
+    "8ball": {
+        description: "Asks a magic 8ball",
+        process: function(message, args){
+            message.reply("No magic 8bal at the moment");
         }
     }
 };
