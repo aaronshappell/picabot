@@ -4,6 +4,7 @@ const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
 
 var commands = {
     "help": {
+        usage: "<command>",
         description: "Gives you a list of commands you can use",
         process: function(message, args){
             if(args.length === 0){
@@ -21,24 +22,46 @@ var commands = {
         }
     },
     "bot": {
+        usage: "",
         description: "Tells you information about the bot",
         process: function(message, args){
             message.reply("I am a discord bot for didney worl who has an appetite for non-nutritive substances");
         }
     },
     "ping": {
+        usage: "",
         description: "Pings the bot",
         process: function(message, args){
             message.reply("Pong :ping_pong:");
         }
     },
     "roll": {
+        usage: "<amount>d<sides>",
         description: "Rolls a die",
         process: function(message, args){
-            message.reply("No dice at the moment");
+            if(args.length === 0){
+                message.reply("You rolled a " + Math.floor(Math.random() * 6 + 1));
+            } else{
+                var amount = parseInt(args[0].split("d")[0]);
+                var sides = parseInt(args[0].split("d")[1]);
+                
+                if(!Number.isInteger(amount) || !Number.isInteger(sides)){
+                    message.reply("That is not a valid die");
+                    return;
+                }
+                if(amount > 10){
+                    message.reply("You cannot roll more than 10 dice at a time");
+                    return;
+                }
+
+                for(var i = 0; i < amount; i++){
+                    message.reply("You rolled a " + Math.floor(Math.random() * sides + 1));
+                }
+            }
         }
     },
     "8ball": {
+        usage: "",
         description: "Asks a magic 8ball",
         process: function(message, args){
             message.reply("No magic 8bal at the moment");
