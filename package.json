@@ -23,6 +23,7 @@
   "homepage": "https://github.com/aaronshappell/picabot#readme",
   "dependencies": {
     "discord.js": "^11.1.0",
+    "ffmpeg-binaries": "^3.2.2-3",
     "node-opus": "^0.2.6",
     "ytdl-core": "^0.14.4"
   }
