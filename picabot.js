@@ -109,7 +109,7 @@ var commands = {
         "usage": "<key> <message>",
         "description": "Saves a personalized message with a given name",
         "process": function(message, args){
-            if(args.length === 0){
+            if(args.length < 2){
                 message.reply("Save a message with `!save <key> <message>`");
                 return;
             }
@@ -128,7 +128,7 @@ var commands = {
                 save[message.author.username][key] = messageToSave;
                 fs.writeFile("save.json", JSON.stringify(save), "utf8", function(err){
                     if(err) throw err;
-                    message.reply(`Your message has been saved as ${key}! :tada:`);
+                    message.reply(`Your message has been saved as \`${key}\`! :tada:`);
                 });
             });
         }
@@ -137,6 +137,31 @@ var commands = {
         "usage": "<name>",
         "description": "Recalls a personalized message with a given name",
         "process": function(message, args){
+            var key = args[0];
+            fs.readFile("save.json", "utf8", function(err, data){
+                if(err) throw err;
+                var save = JSON.parse(data);
+                if(args.length === 0){
+                    var messageKeys = Object.keys(save[message.author.username]);
+                    var savedMessages = "";
+                    if(messageKeys.length === 0){
+                        message.reply("You have no saved messages");
+                        return;
+                    }
+                    for(var i = 0; i < messageKeys.length - 1; i++){
+                        savedMessages += messageKeys[i] + ", ";
+                    }
+                    savedMessages += messageKeys[messageKeys.length - 1];
+                    message.reply("Your saved messages are: " + savedMessages);
+                } else{
+                    var recalledMessage = save[message.author.username][key];
+                    if(recalledMessage === undefined){
+                        message.reply(`You don't have a saved message with the key \`${key}\``);
+                    } else{
+                        message.reply(recalledMessage);
+                    }
+                }
+            });
             
         }
     }
