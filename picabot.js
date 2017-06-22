@@ -8,14 +8,20 @@ var commands = {
         description: "Gives you a list of commands you can use",
         process: function(message, args){
             if(args.length === 0){
-                message.reply("My current commands are: " + Object.keys(commands));
+                var commandKeys = Object.keys(commands);
+                var commandList = "";
+                for(var i = 0; i < commandKeys.length - 1; i++){
+                    commandList += commandKeys[i] + ", ";
+                }
+                commandList += commandKeys[commandKeys.length - 1];
+                message.reply("My current commands are: " + commandList);
                 message.channel.send("You can use `!help <command>` to learn more about a command");
             } else{
                 for(var i = 0; i < args.length; i++){
                     try{
-                        message.channel.send(`!${args[i]}: ${commands[args[i]].description}`);
+                        message.channel.send(`\`!${args[i]} ${commands[args[i]].usage}\`: ${commands[args[i]].description}`);
                     } catch(e){
-                        message.channel.send(`!${args[i]}: Not a command`);
+                        message.channel.send(`\`!${args[i]}\`: Not a command`);
                     }
                 }
             }
@@ -39,12 +45,14 @@ var commands = {
         usage: "<amount>d<sides>",
         description: "Rolls a die",
         process: function(message, args){
+            var rolls = [];
+            var die = "";
             if(args.length === 0){
-                message.reply("You rolled a " + Math.floor(Math.random() * 6 + 1));
+                die = "1d6";
+                rolls.push(Math.floor(Math.random() * 6 + 1));
             } else{
                 var amount = parseInt(args[0].split("d")[0]);
                 var sides = parseInt(args[0].split("d")[1]);
-                
                 if(!Number.isInteger(amount) || !Number.isInteger(sides)){
                     message.reply("That is not a valid die");
                     return;
@@ -53,11 +61,17 @@ var commands = {
                     message.reply("You cannot roll more than 10 dice at a time");
                     return;
                 }
-
+                die = args[0];
                 for(var i = 0; i < amount; i++){
-                    message.reply("You rolled a " + Math.floor(Math.random() * sides + 1));
+                    rolls.push(Math.floor(Math.random() * sides + 1));
                 }
             }
+            var rollList = "";
+            for(var i = 0; i < rolls.length - 1; i++){
+                rollList += rolls[i] + ", ";
+            }
+            rollList += rolls[rolls.length - 1];
+            message.reply(`You rolled ${die} and got: ${rollList}`);
         }
     },
     "8ball": {
