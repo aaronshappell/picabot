@@ -56,7 +56,6 @@ var checkForCommand = function(message){
             message.reply("Sorry that isn't a command yet :sob:");
             message.channel.send("You can type `!help` to see a list of my commands");
         }
-        
     }
 }
 
