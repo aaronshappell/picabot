@@ -15,9 +15,9 @@ var commands = {
                 var commandKeys = Object.keys(commands);
                 var commandList = "";
                 for(var i = 0; i < commandKeys.length - 1; i++){
-                    commandList += commandKeys[i] + ", ";
+                    commandList += `\`${commandKeys[i]}\`, `;
                 }
-                commandList += commandKeys[commandKeys.length - 1];
+                commandList += `and \`${commandKeys[commandKeys.length - 1]}\``;
                 message.reply("My current commands are: " + commandList);
                 message.channel.send("You can use `!help <command>` to learn more about a command");
             } else{
