@@ -23,6 +23,7 @@
   "homepage": "https://github.com/aaronshappell/picabot#readme",
   "dependencies": {
     "discord.js": "^11.1.0",
-    "node-opus": "^0.2.6"
+    "node-opus": "^0.2.6",
+    "ytdl-core": "^0.14.4"
   }
 }

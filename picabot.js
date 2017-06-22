@@ -97,7 +97,7 @@ var commands = {
             message.reply("There are currently no insults :sob:");
             if(!message.guild) return;
             if(message.member.voiceChannel){
-                message.member.voiceChannel.join().then(connection =>{
+                message.member.voiceChannel.join().then(function(connection){
                     message.reply("Connected to the channel");
                 }).catch(console.log);
             } else{
@@ -107,7 +107,7 @@ var commands = {
     },
     "save": {
         "usage": "<key> <message>",
-        "description": "Saves a personalized message with a given name",
+        "description": "Saves a personalized message with a given key",
         "process": function(message, args){
             if(args.length < 2){
                 message.reply("Save a message with `!save <key> <message>`");
@@ -134,8 +134,8 @@ var commands = {
         }
     },
     "recall": {
-        "usage": "<name>",
-        "description": "Recalls a personalized message with a given name",
+        "usage": "<key>",
+        "description": "Recalls a personalized message with a given key",
         "process": function(message, args){
             var key = args[0];
             fs.readFile("save.json", "utf8", function(err, data){
