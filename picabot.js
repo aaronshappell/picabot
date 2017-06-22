@@ -18,7 +18,17 @@ var commands = {
     "help": {
         description: "Gives you a list of commands you can use",
         process: function(message, args){
-            message.reply("There is no help yet"); //show list of commands if no parameters otherwise show description
+            if(args.length === 0){
+                message.reply("My current commands are: " + commands);
+            } else{
+                for(var i = 0; i < args.length; i++){
+                    try{
+                        message.channel.send(`!${args[i]}: ${commands[args[i]].description}`);
+                    } catch(e){
+                        message.channel.send(`~~!${args[i]}~~: Not a command`);
+                    }
+                }
+            }
         }
     }
 };
