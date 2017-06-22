@@ -19,13 +19,14 @@ var commands = {
         description: "Gives you a list of commands you can use",
         process: function(message, args){
             if(args.length === 0){
-                message.reply("My current commands are: " + commands);
+                message.reply("My current commands are: " + Object.keys(commands));
+                message.channel.send("You can use `!help <command>` to learn more about a command");
             } else{
                 for(var i = 0; i < args.length; i++){
                     try{
                         message.channel.send(`!${args[i]}: ${commands[args[i]].description}`);
                     } catch(e){
-                        message.channel.send(`~~!${args[i]}~~: Not a command`);
+                        message.channel.send(`!${args[i]}: Not a command`);
                     }
                 }
             }
