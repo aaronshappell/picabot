@@ -1,10 +1,12 @@
 const Discord = require("discord.js");
+const ytdl = require("ytdl-core");
 const fs = require("fs");
 
 const bot = new Discord.Client();
 const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
 
 var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Conentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
+var songQueue = [];
 
 var commands = {
     "help": {
@@ -19,7 +21,7 @@ var commands = {
                 }
                 commandList += `and \`${commandKeys[commandKeys.length - 1]}\``;
                 message.reply("My current commands are: " + commandList);
-                message.channel.send("You can use `!help <command>` to learn more about a command");
+                message.channel.send("You can use `!help <command>` to learn more about a command!");
             } else{
                 for(var i = 0; i < args.length; i++){
                     try{
@@ -36,6 +38,7 @@ var commands = {
         "description": "Tells you information about the bot",
         "process": function(message, args){
             message.reply("I am a discord bot for didney worl who has an appetite for non-nutritive substances");
+            message.channel.send("If you have any suggestions or command ideas for me tell @Crumster or your local amin");
         }
     },
     "ping": {
@@ -80,7 +83,7 @@ var commands = {
                 rollList += rolls[i] + ", ";
             }
             rollList += rolls[rolls.length - 1];
-            message.reply(`You rolled ${die} and got: ${rollList}`);
+            message.reply(`You rolled :game_die: ${die} and got: ${rollList}`);
         }
     },
     "8ball": {
@@ -88,21 +91,6 @@ var commands = {
         "description": "Asks a magic 8ball",
         "process": function(message, args){
             message.reply(fortunes[Math.floor(Math.random() * fortunes.length)]);
-        }
-    },
-    "insult": {
-        "usage": "",
-        "description": "Call the bot to your voice channel to deliver a special insult",
-        "process": function(message, args){
-            message.reply("There are currently no insults :sob:");
-            if(!message.guild) return;
-            if(message.member.voiceChannel){
-                message.member.voiceChannel.join().then(function(connection){
-                    message.reply("Connected to the channel");
-                }).catch(console.log);
-            } else{
-                message.reply("You need to join a voice channel first");
-            }
         }
     },
     "save": {
@@ -147,11 +135,11 @@ var commands = {
                     try{
                         messageKeys = Object.keys(save[message.author.username]);
                     } catch(e){
-                        message.reply("You have no saved messages");
+                        message.reply("You have no saved messages, try saving one!");
                         return;
                     }
                     if(messageKeys.length === 0){
-                        message.reply("You have no saved messages");
+                        message.reply("You have no saved messages, try saving one!");
                         return;
                     }
                     for(var i = 0; i < messageKeys.length - 1; i++){
@@ -195,7 +183,38 @@ var commands = {
                 }
             });
         }
-    }
+    },
+    "insult": {
+        "usage": "",
+        "description": "Call the bot to your voice channel to deliver a special insult",
+        "process": function(message, args){
+            message.reply("There are currently no insults :sob:");
+        }
+    },
+    "play": {
+        "usage": "<link>",
+        "description": "Play a song in your voice channel via a youtube link",
+        "process": function(message, args){
+            var channel = message.member.voiceChannel;
+            if(channel){
+                channel.join().then(function(connection){
+                    var stream;
+                    try{ //CHANGE THIS
+                        stream = ytdl(args[0], {filter: "audioonly"});
+                        const dispacter = connection.playStream(stream);
+                        dispacter.on("end", function(){channel.leave()});
+                    } catch(e){
+                        message.reply("That is not a valid youtube link :sob:");
+                        channel.leave();
+                        return;
+                    }
+                    message.reply("Adding your song to the queue!");
+                });
+            } else{
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
+            }
+        }
+    },
 };
 
 var checkForCommand = function(message){
@@ -205,7 +224,7 @@ var checkForCommand = function(message){
         try{
             commands[command].process(message, args);
         } catch(e){
-            message.reply("Sorry that isn't a command yet :sob:");
+            message.reply("Sorry, that isn't a command yet :sob:");
             message.channel.send("You can type `!help` to see a list of my commands");
         }
     }
@@ -213,11 +232,11 @@ var checkForCommand = function(message){
 
 bot.on("ready", function(){console.log("Bot ready!")});
 bot.on("disconnect", function(){
-    console.log("Disconnected!");
+    console.log("Bot disconnected!");
     process.exit(1);
 });
 bot.on("guildMemberAdd", function(member){
-    member.guild.defaultChannel.send(`Welcome to the server, ${member}!`);
+    member.guild.defaultChannel.send(`Welcome to the server, ${member}! :smile:`);
     member.guild.defaultChannel.send("You can type `!help` at anytime to see my commands");
 });
 bot.on("message", function(message){checkForCommand(message)});
