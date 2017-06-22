@@ -142,8 +142,14 @@ var commands = {
                 if(err) throw err;
                 var save = JSON.parse(data);
                 if(args.length === 0){
-                    var messageKeys = Object.keys(save[message.author.username]);
+                    var messageKeys;
                     var savedMessages = "";
+                    try{
+                        messageKeys = Object.keys(save[message.author.username]);
+                    } catch(e){
+                        message.reply("You have no saved messages");
+                        return;
+                    }
                     if(messageKeys.length === 0){
                         message.reply("You have no saved messages");
                         return;
@@ -164,6 +170,31 @@ var commands = {
             });
             
         }
+    },
+    "delete": {
+        "usage": "<key>",
+        "description": "Deletes a saved message with a given key",
+        "process": function(message, args){
+            var key = args[0];
+            fs.readFile("save.json", "utf8", function(err, data){
+                if(err) throw err;
+                var save = JSON.parse(data);
+                if(args.length === 0){
+                    message.reply("Delete a saved message with `!delete <key>`");
+                    return;
+                } else{
+                    if(save[message.author.username][key] === undefined){
+                        message.reply(`You don't have a saved message with the key \`${key}\``);
+                    } else{
+                        delete save[message.author.username][key];
+                        fs.writeFile("save.json", JSON.stringify(save), "utf8", function(err){
+                            if(err) throw err;
+                            message.reply(`Your message \`${key}\` has been deleted! :tada:`);
+                        });
+                    }
+                }
+            });
+        }
     }
 };
 
@@ -180,16 +211,16 @@ var checkForCommand = function(message){
     }
 }
 
-bot.on("ready", () => console.log("Bot ready!"));
-bot.on("disconnect", () => {
+bot.on("ready", function(){console.log("Bot ready!")});
+bot.on("disconnect", function(){
     console.log("Disconnected!");
     process.exit(1);
 });
-bot.on("guildMemberAdd", member => {
+bot.on("guildMemberAdd", function(member){
     member.guild.defaultChannel.send(`Welcome to the server, ${member}!`);
     member.guild.defaultChannel.send("You can type `!help` at anytime to see my commands");
 });
-bot.on("message", message => checkForCommand(message));
-bot.on("messageUpdate", (oldMessage, newMessage) => checkForCommand(newMessage));
+bot.on("message", function(message){checkForCommand(message)});
+bot.on("messageUpdate", function(oldMessage, newMessage){checkForCommand(newMessage)});
 
 bot.login(token);
