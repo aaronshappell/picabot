@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const bot = new Discord.Client();
 const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
 
+var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Conentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
+
 var commands = {
     "help": {
         usage: "<command>",
@@ -78,7 +80,14 @@ var commands = {
         usage: "",
         description: "Asks a magic 8ball",
         process: function(message, args){
-            message.reply("No magic 8bal at the moment");
+            message.reply(fortunes[Math.floor(Math.random() * fortunes.length)]);
+        }
+    },
+    "insult": {
+        usage: "",
+        description: "Call the bot to your voice channel to deliver a special insult",
+        process: function(message, args){
+            message.reply("There are currently no insults :sob:");
         }
     }
 };
