@@ -1,0 +1,4 @@
+{
+    "botToken": "Put your discord bot's token here (you can create a bot application here: https://discordapp.com/developers/applications/me/create)",
+    "googleapiKey": "Put your google api key here (you can create one here: https://console.developers.google.com)"
+}
