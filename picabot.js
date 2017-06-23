@@ -111,7 +111,7 @@ var commands = {
         "description": "Saves a personalized message with a given key",
         "process": function(message, args){
             if(args.length < 2){
-                message.reply(`Save a message with \`${prefix}save <key> <message>\```);
+                message.reply(`Save a message with \`${prefix}save <key> <message>\``);
                 return;
             }
             var key = args[0];
