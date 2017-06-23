@@ -54,7 +54,7 @@ var commands = {
         "usage": "",
         "description": "Restarts the bot",
         "process": function(message, args){
-
+            message.reply("No restarting yet :cry:");
         }
     },
     "roll": {
@@ -214,6 +214,13 @@ var commands = {
             } else{
                 message.reply("You can't hear my music if you're not in a voice channel :cry:");
             }
+        }
+    },
+    "search":{
+        "usage": "<query>",
+        "description": "Searches for a youtube video to add to the song queue",
+        "process": function(message, args){
+            message.reply("No searching yet :cry:");
         }
     },
     "play": {
