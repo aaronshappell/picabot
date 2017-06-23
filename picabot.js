@@ -7,6 +7,7 @@ const apiKey = "AIzaSyBwjCsUX_AG1ZdyXpYnNLnrF6MgURbNhBM";
 
 const bot = new Discord.Client();
 const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
+const prefix = "!";
 
 var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Conentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
 
@@ -16,7 +17,7 @@ var songQueue = [];
 var commands = {
     "help": {
         "usage": "<command>",
-        "description": "Gives you a list of commands you can use",
+        "description": "Gives you a list of commands you can use or details on specific command(s)",
         "process": function(message, args){
             if(args.length === 0){
                 var commandKeys = Object.keys(commands);
@@ -26,7 +27,7 @@ var commands = {
                 }
                 commandList += `and \`${commandKeys[commandKeys.length - 1]}\``;
                 message.reply("My current commands are: " + commandList);
-                message.channel.send("You can use `!help <command>` to learn more about a command!");
+                message.channel.send(`You can use \`${prefix}help <command>\` to learn more about a command!`);
             } else{
                 for(var i = 0; i < args.length; i++){
                     try{
@@ -48,7 +49,7 @@ var commands = {
     },
     "ping": {
         "usage": "",
-        "description": "Pings the bot",
+        "description": "Pings the bot, useful for seeing if it's alive",
         "process": function(message, args){
             message.reply("Pong :ping_pong:");
         }
@@ -100,7 +101,7 @@ var commands = {
     },
     "8ball": {
         "usage": "",
-        "description": "Asks a magic 8ball",
+        "description": "Asks a magic 8ball for a fortune",
         "process": function(message, args){
             message.reply(fortunes[Math.floor(Math.random() * fortunes.length)]);
         }
@@ -110,7 +111,7 @@ var commands = {
         "description": "Saves a personalized message with a given key",
         "process": function(message, args){
             if(args.length < 2){
-                message.reply("Save a message with `!save <key> <message>`");
+                message.reply(`Save a message with \`${prefix}save <key> <message>\```);
                 return;
             }
             var key = args[0];
@@ -135,7 +136,7 @@ var commands = {
     },
     "recall": {
         "usage": "<key>",
-        "description": "Recalls a personalized message with a given key",
+        "description": "Lists your saved messages or recalls a saved message with a given key",
         "process": function(message, args){
             var key = args[0];
             fs.readFile("save.json", "utf8", function(err, data){
@@ -180,7 +181,7 @@ var commands = {
                 if(err) throw err;
                 var save = JSON.parse(data);
                 if(args.length === 0){
-                    message.reply("Delete a saved message with `!delete <key>`");
+                    message.reply(`Delete a saved message with \`${prefix}delete <key>\``);
                     return;
                 } else{
                     if(save[message.author.username][key] === undefined){
@@ -241,7 +242,7 @@ var commands = {
                         }
                     });
                 } else{
-                    message.reply("You can search for a song with `!search <query>`");
+                    message.reply(`You can search for a song with \`${prefix}search <query>\``);
                 }
             } else{
                 message.reply("You can't hear my music if you're not in a voice channel :cry:");
@@ -305,7 +306,7 @@ var commands = {
     },
     "clear": {
         "usage": "",
-        "description": "",
+        "description": "Clears the song queue",
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length === 0){
@@ -383,14 +384,14 @@ var playSong = function(message, connection){
 }
 
 var checkForCommand = function(message){
-    if(!message.author.bot && message.content.startsWith("!")){
+    if(!message.author.bot && message.content.startsWith(prefix)){
         var args = message.content.substring(1).split(" ");
         var command = args.splice(0, 1);
         try{
             commands[command].process(message, args);
         } catch(e){
             message.reply("Sorry, that isn't a command yet :sob:");
-            message.channel.send("You can type `!help` to see a list of my commands");
+            message.channel.send(`You can type \`${prefix}help\` to see a list of my commands`);
         }
     }
 }
@@ -402,7 +403,7 @@ bot.on("disconnect", function(){
 });
 bot.on("guildMemberAdd", function(member){
     member.guild.defaultChannel.send(`Welcome to the server, ${member}! :smile:`);
-    member.guild.defaultChannel.send("You can type `!help` at anytime to see my commands");
+    member.guild.defaultChannel.send(`You can type \`${prefix}help\` at anytime to see my commands`);
 });
 bot.on("message", function(message){checkForCommand(message)});
 bot.on("messageUpdate", function(oldMessage, newMessage){checkForCommand(newMessage)});
