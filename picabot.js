@@ -6,6 +6,8 @@ const bot = new Discord.Client();
 const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
 
 var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Conentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
+
+var dispacter;
 var songQueue = [];
 
 var commands = {
@@ -48,6 +50,13 @@ var commands = {
             message.reply("Pong :ping_pong:");
         }
     },
+    "restart": {
+        "usage": "",
+        "description": "Restarts the bot",
+        "process": function(message, args){
+
+        }
+    },
     "roll": {
         "usage": "<amount>d<sides>",
         "description": "Rolls a die",
@@ -83,7 +92,7 @@ var commands = {
                 rollList += rolls[i] + ", ";
             }
             rollList += rolls[rolls.length - 1];
-            message.reply(`You rolled :game_die: ${die} and got: ${rollList}`);
+            message.reply(`You rolled ${die} :game_die: and got: ${rollList}`);
         }
     },
     "8ball": {
@@ -191,31 +200,134 @@ var commands = {
             message.reply("There are currently no insults :sob:");
         }
     },
-    "play": {
+    "addsong": {
         "usage": "<link>",
-        "description": "Play a song in your voice channel via a youtube link",
+        "description": "Adds a song to the song queue via a youtube link",
         "process": function(message, args){
-            var channel = message.member.voiceChannel;
-            if(channel){
-                channel.join().then(function(connection){
-                    var stream;
-                    try{ //CHANGE THIS
-                        stream = ytdl(args[0], {filter: "audioonly"});
-                        const dispacter = connection.playStream(stream);
-                        dispacter.on("end", function(){channel.leave()});
-                    } catch(e){
-                        message.reply("That is not a valid youtube link :sob:");
-                        channel.leave();
-                        return;
-                    }
-                    message.reply("Adding your song to the queue!");
-                });
+            if(message.member.voiceChannel !== undefined){
+                message.reply("Adding your song to the queue! :headphones:");
+                //Add link checking?
+                songQueue.push(args[0]);
+                if(songQueue.length === 1){
+                    message.member.voiceChannel.join().then(function(connection){playSong(message, connection)});
+                }
             } else{
                 message.reply("You can't hear my music if you're not in a voice channel :cry:");
             }
         }
     },
+    "play": {
+        "usage": "",
+        "description": "Resumes the current song",
+        "process": function(message, args){
+            if(message.member.voiceChannel !== undefined){
+                if(songQueue.length > 0){
+                    if(dispacter.paused){
+                        dispacter.resume();
+                        message.reply("Song resumed! :play_pause:");
+                    } else{
+                        message.reply("Song is already playing");
+                    }
+                } else{
+                    message.reply("No song is in the queue");
+                }
+            } else{
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
+            }
+        }
+    },
+    "pause": {
+        "usage": "",
+        "description": "Pauses the current song",
+        "process": function(message, args){
+            if(message.member.voiceChannel !== undefined){
+                if(songQueue.length > 0){
+                    if(!dispacter.paused){
+                        dispacter.pause();
+                        message.reply("Song paused! :pause_button:");
+                    } else{
+                        message.reply("Song is already paused");
+                    }
+                } else{
+                    message.reply("No song is in the queue");
+                }
+            } else{
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
+            }
+        }
+    },
+    "next": {
+        "usage": "",
+        "description": "Skips to the next song in the queue",
+        "process": function(message, args){
+            if(message.member.voiceChannel !== undefined){
+                if(songQueue.length > 0){
+                    dispacter.end();
+                } else{
+                    message.reply("There are no more songs :sob:");
+                }
+            } else{
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
+            }
+        }
+    },
+    "clear": {
+        "usage": "",
+        "description": "",
+        "process": function(message, args){
+            if(message.member.voiceChannel !== undefined){
+                if(songQueue.length === 0){
+                    message.reply("There are no songs to clear");
+                } else{
+                    songQueue = [];
+                    dispacter.end();
+                    message.reply("The song queue has been cleared");
+                }
+            } else{
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
+            }
+        }
+    },
+    "song": {
+        "usage": "",
+        "description": "Gives you the currently playing song",
+        "process": function(message, args){
+            if(songQueue.length > 0){
+                ytdl.getInfo(songQueue[0], function(err, info){
+                    if(err) throw err;
+                    message.reply(`The current song is \`${info.title}\``);
+                });
+            } else{
+                message.reply("No song currently playing");
+            }
+        }
+    }
 };
+
+
+var playSong = function(message, connection){
+    try{
+        var stream = ytdl(songQueue[0], {filter: "audioonly"});
+        dispacter = connection.playStream(stream);
+        dispacter.on("end", function(){
+            songQueue.shift();
+            if(songQueue.length === 0){
+                message.channel.send("There are no more songs :sob:");
+                message.member.voiceChannel.leave();
+            } else{
+                ytdl.getInfo(songQueue[0], function(err, info){
+                    if(err) throw err;
+                    message.channel.send(`Now playing \`${info.title}\``);
+                });
+                playSong(message, connection);
+            }
+        });
+    } catch(e){
+        message.reply("That is not a valid youtube link :sob:");
+        channel.leave();
+        return;
+    }
+}
 
 var checkForCommand = function(message){
     if(!message.author.bot && message.content.startsWith("!")){
