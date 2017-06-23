@@ -1,6 +1,9 @@
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
 const fs = require("fs");
+const google = require("googleapis");
+const youtube = google.youtube("v3");
+const apiKey = "AIzaSyBwjCsUX_AG1ZdyXpYnNLnrF6MgURbNhBM";
 
 const bot = new Discord.Client();
 const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
@@ -220,7 +223,28 @@ var commands = {
         "usage": "<query>",
         "description": "Searches for a youtube video to add to the song queue",
         "process": function(message, args){
-            message.reply("No searching yet :cry:");
+            if(args.length > 0){
+                var query = "";
+                for(var i = 0; i < args.length - 1; i++){
+                    query += args[i] + " "
+                }
+                query += " " + args[args.length - 1];
+                var results = youtube.search.list({
+                    "key": apiKey,
+                    "maxResults": "1",
+                    "part": "id,snippet",
+                    "q": query
+                }, function(err, data){
+                    if(err){
+                        console.log("Error: " + err);
+                    }
+                    if(data){
+                        message.reply(`https://www.youtube.com/watch?v=${data.items[0].id.videoId}`);
+                    }
+                });
+            } else{
+                message.reply("You can search for a song with `!search <query>`");
+            }
         }
     },
     "play": {
