@@ -227,9 +227,10 @@ var commands = {
                     query += " " + args[args.length - 1];
                     var results = youtube.search.list({
                         "key": apiKey,
+                        "q": query,
+                        "type": "video",
                         "maxResults": "1",
-                        "part": "id,snippet",
-                        "q": query
+                        "part": "snippet"
                     }, function(err, data){
                         if(err){
                             message.reply("There was an error searching for your song :cry:");
@@ -326,7 +327,7 @@ var commands = {
             if(songQueue.length > 0){
                 message.reply(`The current song is \`${songQueue[0].title}\` :musical_note:, added by ${songQueue[0].user}`);
             } else{
-                message.reply("No song is currently playing");
+                message.reply("No song is in the queue");
             }
         }
     },
@@ -334,6 +335,16 @@ var commands = {
         "usage": "",
         "description": "Gives you a list of the songs currently in the queue",
         "process": function(message, args){
+            if(songQueue.length > 0){
+                var songList = "";
+                for(var i = 0; i < songQueue.length - 1; i++){
+                    songList += `\`${songQueue[i].title}\`, `;
+                }
+                songList += ` and \`${songQueue[songQueue.length - 1].title}\``;
+                message.reply("The song queue currently has " + songList);
+            } else{
+                message.reply("No song is in the queue");
+            }
         }
     }
 };
