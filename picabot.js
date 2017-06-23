@@ -208,12 +208,7 @@ var commands = {
         "description": "Adds a song to the song queue via a youtube link",
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
-                message.reply("Adding your song to the queue! :headphones:");
-                //Add link checking?
-                songQueue.push(args[0]);
-                if(songQueue.length === 1){
-                    message.member.voiceChannel.join().then(function(connection){playSong(message, connection)});
-                }
+                addSong(message, args[0]);
             } else{
                 message.reply("You can't hear my music if you're not in a voice channel :cry:");
             }
@@ -223,27 +218,32 @@ var commands = {
         "usage": "<query>",
         "description": "Searches for a youtube video to add to the song queue",
         "process": function(message, args){
-            if(args.length > 0){
-                var query = "";
-                for(var i = 0; i < args.length - 1; i++){
-                    query += args[i] + " "
+            if(message.member.voiceChannel !== undefined){
+                if(args.length > 0){
+                    var query = "";
+                    for(var i = 0; i < args.length - 1; i++){
+                        query += args[i] + " "
+                    }
+                    query += " " + args[args.length - 1];
+                    var results = youtube.search.list({
+                        "key": apiKey,
+                        "maxResults": "1",
+                        "part": "id,snippet",
+                        "q": query
+                    }, function(err, data){
+                        if(err){
+                            message.reply("There was an error searching for your song :cry:");
+                            console.log("Error: " + err);
+                        }
+                        if(data){
+                            addSong(message, "https://www.youtube.com/watch?v=" + data.items[0].id.videoId);
+                        }
+                    });
+                } else{
+                    message.reply("You can search for a song with `!search <query>`");
                 }
-                query += " " + args[args.length - 1];
-                var results = youtube.search.list({
-                    "key": apiKey,
-                    "maxResults": "1",
-                    "part": "id,snippet",
-                    "q": query
-                }, function(err, data){
-                    if(err){
-                        console.log("Error: " + err);
-                    }
-                    if(data){
-                        message.reply(`https://www.youtube.com/watch?v=${data.items[0].id.videoId}`);
-                    }
-                });
             } else{
-                message.reply("You can search for a song with `!search <query>`");
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
             }
         }
     },
@@ -321,43 +321,54 @@ var commands = {
     },
     "song": {
         "usage": "",
-        "description": "Gives you the currently playing song",
+        "description": "Gives you information about the currently playing song",
         "process": function(message, args){
             if(songQueue.length > 0){
-                ytdl.getInfo(songQueue[0], function(err, info){
-                    if(err) throw err;
-                    message.reply(`The current song is \`${info.title}\``);
-                });
+                message.reply(`The current song is \`${songQueue[0].title}\` :musical_note:, added by ${songQueue[0].user}`);
             } else{
-                message.reply("No song currently playing");
+                message.reply("No song is currently playing");
             }
+        }
+    },
+    "music": {
+        "usage": "",
+        "description": "Gives you a list of the songs currently in the queue",
+        "process": function(message, args){
         }
     }
 };
 
+var addSong = function(message, url){
+    ytdl.getInfo(url, function(err, info){
+        if(err){
+            message.reply("Sorry I couldn't get info for that song :cry:");
+            return;
+        }
+        var song = {};
+        song.title = info.title;
+        song.url = url;
+        song.user = message.author.username;
+        songQueue.push(song);
+        message.reply(`I have added \`${info.title}\` to the song queue! :headphones:`);
+        if(songQueue.length === 1){
+            message.member.voiceChannel.join().then(function(connection){playSong(message, connection)});
+        }
+    });
+}
 
 var playSong = function(message, connection){
-    try{
-        var stream = ytdl(songQueue[0], {filter: "audioonly"});
-        dispacter = connection.playStream(stream);
-        dispacter.on("end", function(){
-            songQueue.shift();
-            if(songQueue.length === 0){
-                message.channel.send("There are no more songs :sob:");
-                message.member.voiceChannel.leave();
-            } else{
-                ytdl.getInfo(songQueue[0], function(err, info){
-                    if(err) throw err;
-                    message.channel.send(`Now playing \`${info.title}\``);
-                });
-                playSong(message, connection);
-            }
-        });
-    } catch(e){
-        message.reply("That is not a valid youtube link :sob:");
-        channel.leave();
-        return;
-    }
+    var stream = ytdl(songQueue[0].url, {"filter": "audioonly"});
+    dispacter = connection.playStream(stream);
+    message.channel.send(`Now playing \`${songQueue[0].title}\` :musical_note:, added by ${songQueue[0].user}`);
+    dispacter.on("end", function(){
+        songQueue.shift();
+        if(songQueue.length === 0){
+            message.channel.send("There are no more songs :sob:");
+            message.member.voiceChannel.leave();
+        } else{
+            playSong(message, connection);
+        }
+    });
 }
 
 var checkForCommand = function(message){
