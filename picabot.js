@@ -1,9 +1,9 @@
+require("dotenv").config();
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
 const fs = require("fs");
 const google = require("googleapis");
 const youtube = google.youtube("v3");
-const auth = require("./auth.json");
 const bot = new Discord.Client();
 
 const prefix = "!";
@@ -217,7 +217,7 @@ var commands = {
                     }
                     query += " " + args[args.length - 1];
                     var results = youtube.search.list({
-                        "key": auth.googleapiKey,
+                        "key": process.env.GOOGLEAPIKEY,
                         "q": query,
                         "type": "video",
                         "maxResults": "1",
@@ -398,4 +398,4 @@ bot.on("guildMemberAdd", function(member){
 bot.on("message", function(message){checkForCommand(message)});
 bot.on("messageUpdate", function(oldMessage, newMessage){checkForCommand(newMessage)});
 
-bot.login(auth.botToken);
+bot.login(process.env.BOTTOKEN);

@@ -18,6 +18,7 @@
   "homepage": "https://github.com/aaronshappell/picabot#readme",
   "dependencies": {
     "discord.js": "^11.1.0",
+    "dotenv": "^4.0.0",
     "ffmpeg-binaries": "^3.2.2-3",
     "googleapis": "^19.0.0",
     "node-opus": "^0.2.6",
