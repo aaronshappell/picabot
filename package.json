@@ -11,11 +11,6 @@
     "url": "git+https://github.com/aaronshappell/picabot.git"
   },
   "author": "Aaron Shappell",
-  "contributors": [
-    {
-      "name": ""
-    }
-  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/aaronshappell/picabot/issues"
