@@ -3,10 +3,8 @@ const ytdl = require("ytdl-core");
 const fs = require("fs");
 const google = require("googleapis");
 const youtube = google.youtube("v3");
-const apiKey = "AIzaSyBwjCsUX_AG1ZdyXpYnNLnrF6MgURbNhBM";
-
+const auth = require("./auth.json");
 const bot = new Discord.Client();
-const token = "MzI3MTIyNTk3OTAyODExMTM3.DCwwQQ.BIxxQQEfezftpzywZLtawDeMoKU";
 const prefix = "!";
 
 var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Conentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
@@ -227,7 +225,7 @@ var commands = {
                     }
                     query += " " + args[args.length - 1];
                     var results = youtube.search.list({
-                        "key": apiKey,
+                        "key": auth.googleapiKey,
                         "q": query,
                         "type": "video",
                         "maxResults": "1",
@@ -408,4 +406,4 @@ bot.on("guildMemberAdd", function(member){
 bot.on("message", function(message){checkForCommand(message)});
 bot.on("messageUpdate", function(oldMessage, newMessage){checkForCommand(newMessage)});
 
-bot.login(token);
+bot.login(auth.botToken);
