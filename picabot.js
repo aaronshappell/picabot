@@ -399,3 +399,17 @@ bot.on("message", function(message){checkForCommand(message)});
 bot.on("messageUpdate", function(oldMessage, newMessage){checkForCommand(newMessage)});
 
 bot.login(process.env.BOTTOKEN);
+
+fs.readFile("save.json", function(err, data){
+    if(err){
+        if(err.code === "ENOENT"){
+            console.log("save.json does not exist");
+            fs.writeFile("save.json", "{}", "utf8", function(err){
+                if(err) throw err
+                console.log("save.json created");
+            });
+        } else{
+            throw err;
+        }
+    }
+});
