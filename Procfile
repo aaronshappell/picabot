@@ -1,1 +1,1 @@
-web: node picabot.js
+worker: node picabot.js
