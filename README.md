@@ -2,7 +2,7 @@
 A discord bot for didney worl who has an appetite for non-nutritive substances
 
 ## Installation and Setup
-You can install the bot by first cloning the git repo. Make sure you have both node and npm installed on your computer. Then you must install the necessary dependencies with `npm install` in the project directory. In order to run the bot you must at provide the bot token and google api key in an `auth.json` file. See `example.auth.json` for details. At this point you can either make edits or run the bot!
+You can install the bot by first cloning the git repo. Make sure you have both node and npm installed on your computer. Then you must install the necessary dependencies with `npm install` in the project directory. In order to run the bot you must at provide the bot token and google api key in an `auth.json` file. See [example.auth.json](https://github.com/aaronshappell/picabot/blob/master/example.auth.json) for details. At this point you can either make edits or run the bot!
 
 ## Running
 You can run the bot with `node ./` from within the project directory.  
