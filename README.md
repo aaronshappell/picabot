@@ -13,7 +13,6 @@ The current commands are as follows:
 `help <command>` Gives you a list of commands you can use or details on specific command(s)  
 `bot` Tells you information about the bot  
 `ping` Pings the bot, useful for seeing if it's alive  
-`restart` (Not implemented) Restarts the bot  
 `roll <amount>d<sides>` Rolls a die  
 `8ball` Asks a magic 8ball for a fortune  
 `save <key> <message>` Saves a personalized message with a given key  

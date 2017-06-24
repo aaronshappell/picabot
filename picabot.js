@@ -51,13 +51,6 @@ var commands = {
             message.reply("Pong :ping_pong:");
         }
     },
-    "restart": {
-        "usage": "",
-        "description": "Restarts the bot",
-        "process": function(message, args){
-            message.reply("No restarting yet :cry:");
-        }
-    },
     "roll": {
         "usage": "<amount>d<sides>",
         "description": "Rolls a die",
