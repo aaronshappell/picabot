@@ -100,6 +100,7 @@ var commands = {
         "usage": "<key> <message>",
         "description": "Saves a personalized message with a given key",
         "process": function(message, args){
+            message.reply("**Disclaimer:** your message will not be permanantly saved and will delete upon bot restart (for now)");
             if(args.length < 2){
                 message.reply(`Save a message with \`${prefix}save <key> <message>\``);
                 return;
