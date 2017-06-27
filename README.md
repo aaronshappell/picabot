@@ -13,6 +13,8 @@ You can run the bot with `node ./` from within the project directory. It will pr
 Make sure you have set your config variables in heroku (environment variables) with your bot token and google api key as `BOTTOKEN` and `GOOGLEAPIKEY` respectively.  
 You can run the bot by pushing to your remote heroku repository. You can check the log with `heroku logs --tail` to verify that your bot is running and you will see `Bot ready!`.
 
+**Note:** messages saved with the `!save` command will not be permanently saved with heroku hosting due to the ephemeral lifecycle of dynos.
+
 ## Commands
 The current commands are as follows:  
 `help <command>` Gives you a list of commands you can use or details on specific command(s)  
