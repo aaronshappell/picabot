@@ -129,7 +129,6 @@ var commands = {
         "usage": "<key>",
         "description": "Lists your saved messages or recalls a saved message with a given key",
         "process": function(message, args){
-            var key = args[0];
             fs.readFile("save.json", "utf8", function(err, data){
                 if(err) throw err;
                 var save = JSON.parse(data);
@@ -152,6 +151,7 @@ var commands = {
                     savedMessages += messageKeys[messageKeys.length - 1];
                     message.reply("Your saved messages are: " + savedMessages);
                 } else{
+                    var key = args[0];
                     var recalledMessage = save[message.author.username][key];
                     if(recalledMessage === undefined){
                         message.reply(`You don't have a saved message with the key \`${key}\``);
@@ -160,14 +160,12 @@ var commands = {
                     }
                 }
             });
-            
         }
     },
     "delete": {
         "usage": "<key>",
         "description": "Deletes a saved message with a given key",
         "process": function(message, args){
-            var key = args[0];
             fs.readFile("save.json", "utf8", function(err, data){
                 if(err) throw err;
                 var save = JSON.parse(data);
@@ -175,6 +173,7 @@ var commands = {
                     message.reply(`Delete a saved message with \`${prefix}delete <key>\``);
                     return;
                 } else{
+                    var key = args[0];
                     if(save[message.author.username][key] === undefined){
                         message.reply(`You don't have a saved message with the key \`${key}\``);
                     } else{
@@ -330,13 +329,24 @@ var commands = {
             if(songQueue.length > 0){
                 var songList = "";
                 for(var i = 0; i < songQueue.length - 1; i++){
-                    songList += `\`${songQueue[i].title}\`, `;
+                    songList += `\`${songQueue[i].title}\`\n`;
                 }
-                songList += ` and \`${songQueue[songQueue.length - 1].title}\``;
-                message.reply("The song queue currently has " + songList);
+                songList += `\`${songQueue[songQueue.length - 1].title}\``;
+                message.reply("The song queue currently has:\n" + songList);
             } else{
                 message.reply("No song is in the queue");
             }
+        }
+    },
+    "printsave": {
+        "usage": "",
+        "description": "Prints the save.json to the console for temporary saving",
+        "process": function(message, args){
+            fs.readFile("save.json", "utf8", function(err, data){
+                if(err) throw err;
+                console.log(JSON.parse(data));
+                message.reply("The save file has been printed to the log");
+            });
         }
     }
 };
