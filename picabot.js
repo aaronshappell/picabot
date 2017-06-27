@@ -152,12 +152,14 @@ var commands = {
                     message.reply("Your saved messages are: " + savedMessages);
                 } else{
                     var key = args[0];
-                    var recalledMessage = save[message.author.username][key];
-                    if(recalledMessage === undefined){
+                    var recalledMessage;
+                    try{
+                        recalledMessage = save[message.author.username][key];
+                    } catch(e){
                         message.reply(`You don't have a saved message with the key \`${key}\``);
-                    } else{
-                        message.reply(recalledMessage);
+                        return;
                     }
+                    message.reply(recalledMessage);
                 }
             });
         }
@@ -174,15 +176,16 @@ var commands = {
                     return;
                 } else{
                     var key = args[0];
-                    if(save[message.author.username][key] === undefined){
-                        message.reply(`You don't have a saved message with the key \`${key}\``);
-                    } else{
+                    try{
                         delete save[message.author.username][key];
-                        fs.writeFile("save.json", JSON.stringify(save), "utf8", function(err){
-                            if(err) throw err;
-                            message.reply(`Your message \`${key}\` has been deleted! :tada:`);
-                        });
+                    } catch(e){
+                        message.reply(`You don't have a saved message with the key \`${key}\``);
+                        return;
                     }
+                    fs.writeFile("save.json", JSON.stringify(save), "utf8", function(err){
+                        if(err) throw err;
+                        message.reply(`Your message \`${key}\` has been deleted! :tada:`);
+                    });
                 }
             });
         }
