@@ -7,8 +7,8 @@ const youtube = google.youtube("v3");
 const bot = new Discord.Client();
 
 const prefix = "!";
-var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Conentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
-var dispacter;
+var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
+var dispatcher;
 var songQueue = [];
 
 var commands = {
@@ -248,8 +248,8 @@ var commands = {
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length > 0){
-                    if(dispacter.paused){
-                        dispacter.resume();
+                    if(dispatcher.paused){
+                        dispatcher.resume();
                         message.reply("Song resumed! :play_pause:");
                     } else{
                         message.reply("Song is already playing");
@@ -268,8 +268,8 @@ var commands = {
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length > 0){
-                    if(!dispacter.paused){
-                        dispacter.pause();
+                    if(!dispatcher.paused){
+                        dispatcher.pause();
                         message.reply("Song paused! :pause_button:");
                     } else{
                         message.reply("Song is already paused");
@@ -288,7 +288,7 @@ var commands = {
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length > 0){
-                    dispacter.end();
+                    dispatcher.end();
                 } else{
                     message.reply("There are no more songs :sob:");
                 }
@@ -306,7 +306,7 @@ var commands = {
                     message.reply("There are no songs to clear");
                 } else{
                     songQueue = [];
-                    dispacter.end();
+                    dispatcher.end();
                     message.reply("The song queue has been cleared");
                 }
             } else{
@@ -374,9 +374,9 @@ var addSong = function(message, url){
 
 var playSong = function(message, connection){
     var stream = ytdl(songQueue[0].url, {"filter": "audioonly"});
-    dispacter = connection.playStream(stream);
+    dispatcher = connection.playStream(stream);
     message.channel.send(`Now playing \`${songQueue[0].title}\` :musical_note:, added by ${songQueue[0].user}`);
-    dispacter.on("end", function(){
+    dispatcher.on("end", function(){
         songQueue.shift();
         if(songQueue.length === 0){
             message.channel.send("There are no more songs :sob:");
