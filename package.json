@@ -23,5 +23,8 @@
     "googleapis": "^19.0.0",
     "node-opus": "^0.2.6",
     "ytdl-core": "^0.14.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.1.1"
   }
 }
