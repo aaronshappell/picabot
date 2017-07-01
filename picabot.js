@@ -4,8 +4,15 @@ const ytdl = require("ytdl-core");
 const fs = require("fs");
 const google = require("googleapis");
 const youtube = google.youtube("v3");
-const bot = new Discord.Client();
+/*
+const soundcloud = require("soundcloud");
 
+soundcloud.initialize({
+    "client_id": process.env.SOUNDCLOUDID
+});
+*/
+
+const bot = new Discord.Client();
 const prefix = "!";
 var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
 var dispatcher;
@@ -52,41 +59,28 @@ var commands = {
         }
     },
     "roll": {
-        "usage": "<amount>d<sides>",
-        "description": "Rolls a die",
+        "usage": "<amount>d<sides>+<modifier>",
+        "description": "Rolls DnD style dice",
         "process": function(message, args){
-            var rolls = [];
-            var die = "";
             if(args.length === 0){
-                die = "1d6";
-                rolls.push(Math.floor(Math.random() * 6 + 1));
+                message.reply(`You rolled 1d6 :game_die: and got: ${Math.floor(Math.random() * 6 + 1)}`);
             } else{
-                var amount = parseInt(args[0].split("d")[0]);
-                var sides = parseInt(args[0].split("d")[1]);
-                var single = false;
-                if(args[0].substring(0, 1) === "d" && Number.isInteger(sides)){
-                    rolls.push(Math.floor(Math.random() * sides + 1));
-                    single = true;
-                }
-                if(!single && (!Number.isInteger(amount) || !Number.isInteger(sides))){
-                    message.reply("That is not a valid die");
-                    return;
-                }
-                if(amount > 10){
-                    message.reply("You cannot roll more than 10 dice at a time");
-                    return;
-                }
-                die = args[0];
-                for(var i = 0; i < amount; i++){
-                    rolls.push(Math.floor(Math.random() * sides + 1));
+                for(var i = 0; i < args.length; i++){
+                    var regex = args[i].match(/^(\d*)d(\d+)\+?(\d*)$/);
+                    if(regex === null){
+                        message.channel.send(`\`${args[i]}\` is not a valid die`);
+                    } else{
+                        if(regex[1] === "") regex[1] = 1;
+                        if(regex[3] === "") regex[3] = 0;
+                        var rolls = "";
+                        for(var j = 0; j < regex[1] - 1; j++){
+                            rolls += (Math.floor(Math.random() * Number.parseInt(regex[2]) + 1) + Number.parseInt(regex[3])) + ", ";
+                        }
+                        rolls += (Math.floor(Math.random() * Number.parseInt(regex[2]) + 1) + Number.parseInt(regex[3]));
+                        message.channel.send(`You rolled \`${args[i]}\` :game_die: and got: \`${rolls}\``);
+                    }
                 }
             }
-            var rollList = "";
-            for(var i = 0; i < rolls.length - 1; i++){
-                rollList += rolls[i] + ", ";
-            }
-            rollList += rolls[rolls.length - 1];
-            message.reply(`You rolled ${die} :game_die: and got: ${rollList}`);
         }
     },
     "8ball": {
