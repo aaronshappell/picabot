@@ -210,7 +210,7 @@ var commands = {
                 if(args.length > 0){
                     var query = "";
                     for(var i = 0; i < args.length - 1; i++){
-                        query += args[i] + " "
+                        query += args[i] + " ";
                     }
                     query += " " + args[args.length - 1];
                     var results = youtube.search.list({
@@ -229,7 +229,7 @@ var commands = {
                         }
                     });
                 } else{
-                    message.reply(`You can search for a song with \`${prefix}search <query>\``);
+                    message.reply(`You can search for a youtube song with \`${prefix}yt <query>\``);
                 }
             } else{
                 message.reply("You can't hear my music if you're not in a voice channel :cry:");
@@ -241,6 +241,35 @@ var commands = {
         "description": "Searches for a soundcloud track to add to the song queue",
         "process": function(message, args){
             message.reply("No soundcloud support yet :cry:");
+
+            if(message.member.voiceChannel !== undefined){
+                if(args.length > 0){
+                    var query = "";
+                    for(var i = 0; i < args.length - 1; i++){
+                        query += args[i] + " ";
+                    }
+                    query += " " + args[args.length - 1];
+                    /*
+                    //get list of tracks test
+                    soundcloud.get("/tracks", {
+                        "q": query
+                    }).then(function(tracks){
+                        //get stream test
+                        soundcloud.get(tracks[0].stream_url, {
+                            "allow_redirects": false
+                        }).then(function(stream_url){ //not sure
+                            console.log(stream_url.location);
+                        });
+                        console.log(tracks);
+                    });
+                    
+                    */
+                } else{
+                    message.reply(`You can search for a soundcloud track with \`${prefix}sc <query>\``);
+                }
+            } else{
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
+            }
         }
     },
     "play": {
