@@ -202,7 +202,7 @@ var commands = {
             }
         }
     },
-    "yt":{
+    "yt": {
         "usage": "<query>",
         "description": "Searches for a youtube video to add to the song queue",
         "process": function(message, args){
@@ -234,6 +234,13 @@ var commands = {
             } else{
                 message.reply("You can't hear my music if you're not in a voice channel :cry:");
             }
+        }
+    },
+    "sc": {
+        "usage": "<query>",
+        "description": "Searches for a soundcloud track to add to the song queue",
+        "process": function(message, args){
+            message.reply("No soundcloud support yet :cry:");
         }
     },
     "play": {
