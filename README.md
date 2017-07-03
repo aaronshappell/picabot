@@ -32,7 +32,7 @@ The current commands are as follows:
 `insult` (**Not implemented yet**) Calls the bot to your voice channel to deliver a special insult  
 `addsong <link>` Adds a song to the song queue via a youtube link  
 `yt <query>` Searches for a youtube video to add to the song queue  
-`sc <query>` Searches for a soundcloud track to add to the song queue  
+`sc <query>` (**Not implemented yet**) Searches for a soundcloud track to add to the song queue  
 `play` Resumes the current song  
 `pause` Pauses the current song  
 `next` Skips to the next song in the queue  
