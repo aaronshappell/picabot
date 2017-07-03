@@ -397,7 +397,11 @@ var addSong = function(message, url){
         songQueue.push(song);
         message.reply(`I have added \`${info.title}\` to the song queue! :headphones:`);
         if(songQueue.length === 1){
-            message.member.voiceChannel.join().then(function(connection){playSong(message, connection)});
+            message.member.voiceChannel.join().then(function(connection){
+                playSong(message, connection)
+            }).catch(function(e){
+                console.log(e);
+            });
         }
     });
 }
