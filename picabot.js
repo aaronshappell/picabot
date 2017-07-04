@@ -385,11 +385,7 @@ var commands = {
 };
 
 var addSong = function(message, url){
-    ytdl.getInfo(url, function(err, info){
-        if(err){
-            message.reply("Sorry I couldn't get info for that song :cry:");
-            return;
-        }
+    ytdl.getInfo(url).then(function(info){
         var song = {};
         song.title = info.title;
         song.url = url;
@@ -398,11 +394,11 @@ var addSong = function(message, url){
         message.reply(`I have added \`${info.title}\` to the song queue! :headphones:`);
         if(songQueue.length === 1){
             message.member.voiceChannel.join().then(function(connection){
-                playSong(message, connection)
-            }).catch(function(e){
-                console.log(e);
-            });
+                playSong(message, connection);
+            }).catch(console.log);
         }
+    }).catch(function(err){
+        message.reply("Sorry I couldn't get info for that song :cry:");
     });
 }
 
@@ -434,9 +430,9 @@ var checkForCommand = function(message){
     }
 }
 
-bot.on("ready", function(){console.log("Bot ready!")});
+bot.on("ready", function(){console.log("Bot ready")});
 bot.on("disconnect", function(){
-    console.log("Bot disconnected!");
+    console.log("Bot disconnected");
     process.exit(1);
 });
 bot.on("guildMemberAdd", function(member){
@@ -446,7 +442,9 @@ bot.on("guildMemberAdd", function(member){
 bot.on("message", function(message){checkForCommand(message)});
 bot.on("messageUpdate", function(oldMessage, newMessage){checkForCommand(newMessage)});
 
-bot.login(process.env.BOTTOKEN);
+bot.login(process.env.BOTTOKEN).then(function(){
+    console.log("Bot logged in");
+}).catch(console.log);
 
 fs.readFile("save.json", function(err, data){
     if(err){
