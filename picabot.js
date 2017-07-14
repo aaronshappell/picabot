@@ -63,7 +63,7 @@ var commands = {
         "description": "Rolls DnD style dice",
         "process": function(message, args){
             if(args.length === 0){
-                message.reply(`You rolled 1d6 :game_die: and got: ${Math.floor(Math.random() * 6 + 1)}`);
+                message.reply(`You rolled \`1d6\` :game_die: and got: \`${Math.floor(Math.random() * 6 + 1)}\``);
             } else{
                 for(var i = 0; i < args.length; i++){
                     var regex = args[i].match(/^(\d*)d(\d+)\+?(\d*)$/);
