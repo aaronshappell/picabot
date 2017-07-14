@@ -72,11 +72,17 @@ var commands = {
                     } else{
                         if(regex[1] === "") regex[1] = 1;
                         if(regex[3] === "") regex[3] = 0;
-                        var rolls = "";
+                        var rolls = "(";
+                        var roll;
+                        var sum = 0;
                         for(var j = 0; j < regex[1] - 1; j++){
-                            rolls += (Math.floor(Math.random() * Number.parseInt(regex[2]) + 1) + Number.parseInt(regex[3])) + ", ";
+                            roll = Math.floor(Math.random() * Number.parseInt(regex[2]) + 1);
+                            sum += roll;
+                            rolls += roll + ", ";
                         }
-                        rolls += (Math.floor(Math.random() * Number.parseInt(regex[2]) + 1) + Number.parseInt(regex[3]));
+                        roll = Math.floor(Math.random() * Number.parseInt(regex[2]) + 1);
+                        sum += roll;
+                        rolls += roll + ") + " + regex[3] + " = " + (sum + Number.parseInt(regex[3]));
                         message.channel.send(`You rolled \`${args[i]}\` :game_die: and got: \`${rolls}\``);
                     }
                 }
@@ -451,7 +457,7 @@ fs.readFile("save.json", function(err, data){
         if(err.code === "ENOENT"){
             console.log("save.json does not exist");
             fs.writeFile("save.json", "{}", "utf8", function(err){
-                if(err) throw err
+                if(err) throw err;
                 console.log("save.json created");
             });
         } else{
