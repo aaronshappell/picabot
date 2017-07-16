@@ -62,6 +62,11 @@ var commands = {
         "usage": "<amount>d<sides>+<modifier>",
         "description": "Rolls DnD style dice",
         "process": function(message, args){
+            if(Math.floor(Math.random() * 100 + 1) === 1){
+                message.channel.send("You tried to roll a `die` :game_die: and got: `rick`");
+                message.channel.send("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+                return;
+            }
             if(args.length === 0){
                 message.reply(`You rolled \`1d6\` :game_die: and got: \`${Math.floor(Math.random() * 6 + 1)}\``);
             } else{
@@ -375,17 +380,6 @@ var commands = {
             } else{
                 message.reply("No song is in the queue");
             }
-        }
-    },
-    "printsave": {
-        "usage": "",
-        "description": "Prints the save.json to the console for temporary saving",
-        "process": function(message, args){
-            fs.readFile("save.json", "utf8", function(err, data){
-                if(err) throw err;
-                console.log(JSON.parse(data));
-                message.reply("The save file has been printed to the log");
-            });
         }
     }
 };
