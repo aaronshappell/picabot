@@ -11,6 +11,7 @@ var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes d
 var dispatcher;
 var songQueue = [];
 var currentSongIndex = -1;
+var shuffle = false;
 
 var commands = {
     "help": {
@@ -392,6 +393,27 @@ var commands = {
             }
         }
     },
+    "shuffle": {
+        "usage": "",
+        "description": "Toggles shuffling of the song queue",
+        "process": function(message, args){
+            if(message.member.voiceChannel !== undefined){
+                if(songQueue.length === 0){
+                    message.reply("There are no songs to shuffle");
+                } else{
+                    if(shuffle){
+                        shuffle = false;
+                        message.reply("Shuffle is now disabled");
+                    } else{
+                        shuffle = true;
+                        message.reply("Shuffle is now enabled");
+                    }
+                }
+            } else{
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
+            }
+        }
+    },
     "song": {
         "usage": "",
         "description": "Gives you information about the currently playing song",
@@ -448,10 +470,13 @@ var addSong = function(message, url){
 }
 
 var playSong = function(message, connection){
+    if(shuffle){
+        currentSongIndex = Math.floor(Math.random() * songQueue.length);
+    }
     var currentSong = songQueue[currentSongIndex];
     var stream = ytdl(currentSong.url, {"filter": "audioonly"});
     dispatcher = connection.playStream(stream);
-    message.channel.send(`Now playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
+    message.channel.send(`Now ${(shuffle) ? "randomly " : ""}playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
     dispatcher.player.on("warn", console.warn);
     dispatcher.on("warn", console.warn);
     dispatcher.on("error", console.error);

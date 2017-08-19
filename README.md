@@ -38,6 +38,7 @@ Soon to come...
 `!next <amount>`: Skips ahead in the queue by a certain amount of songs  
 `!goto <index>`: Skips to a certain song in the queue by its index  
 `!clear <index>`: Clears the song queue or a specific song in the queue  
+`!shuffle`: Toggles shuffling of the song queue  
 `!song`: Gives you information about the currently playing song  
 `!music`: Gives you a list of the songs currently in the queue  
 ### Example Command
