@@ -4,13 +4,6 @@ const ytdl = require("ytdl-core");
 const fs = require("fs");
 const google = require("googleapis");
 const youtube = google.youtube("v3");
-/*
-const soundcloud = require("soundcloud");
-
-soundcloud.initialize({
-    "client_id": process.env.SOUNDCLOUDID
-});
-*/
 
 const bot = new Discord.Client();
 const prefix = "!";
@@ -250,42 +243,6 @@ var commands = {
                     });
                 } else{
                     message.reply(`You can search for a youtube song with \`${prefix}yt <query>\``);
-                }
-            } else{
-                message.reply("You can't hear my music if you're not in a voice channel :cry:");
-            }
-        }
-    },
-    "sc": {
-        "usage": "<query>",
-        "description": "(NOT DONE) Searches for a soundcloud track to add to the song queue",
-        "process": function(message, args){
-            message.reply("No soundcloud support yet :cry:");
-
-            if(message.member.voiceChannel !== undefined){
-                if(args.length > 0){
-                    var query = "";
-                    for(var i = 0; i < args.length - 1; i++){
-                        query += args[i] + " ";
-                    }
-                    query += " " + args[args.length - 1];
-                    /*
-                    //get list of tracks test
-                    soundcloud.get("/tracks", {
-                        "q": query
-                    }).then(function(tracks){
-                        //get stream test
-                        soundcloud.get(tracks[0].stream_url, {
-                            "allow_redirects": false
-                        }).then(function(stream_url){ //not sure
-                            console.log(stream_url.location);
-                        });
-                        console.log(tracks);
-                    });
-                    
-                    */
-                } else{
-                    message.reply(`You can search for a soundcloud track with \`${prefix}sc <query>\``);
                 }
             } else{
                 message.reply("You can't hear my music if you're not in a voice channel :cry:");
