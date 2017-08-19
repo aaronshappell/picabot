@@ -457,7 +457,7 @@ var playSong = function(message, connection){
     dispatcher.on("error", console.error);
     dispatcher.once("end", function(reason){
         console.log("Song ended because: " + reason);
-        if(reason === "user"){
+        if(reason === "user" || reason === "Stream is not generating quickly enough."){
             currentSongIndex++;
             if(currentSongIndex < songQueue.length){
                 setTimeout(function(){
