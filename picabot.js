@@ -364,12 +364,22 @@ var commands = {
         }
     },
     "clear": {
-        "usage": "",
-        "description": "Clears the song queue",
+        "usage": "<index>",
+        "description": "Clears the song queue or a specific song in the queue",
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length === 0){
                     message.reply("There are no songs to clear");
+                } else if(args.length > 0){
+                    var index = Number.parseInt(args[0]);
+                    if(Number.isInteger(index)){
+                        songQueue.splice(index - 1, 1);
+                        if(index - 1 <= currentSongIndex){
+                            currentSongIndex--;
+                        }
+                    } else{
+                        message.reply(`\`${args[0]}\` is an invalid index`);
+                    }
                 } else{
                     dispatcher.end("clear");
                     currentSongIndex = -1;
