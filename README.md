@@ -20,26 +20,27 @@ You can run the bot by pushing to your remote heroku repository or on the websit
 Soon to come...
 
 ## Commands
-The current commands are as follows:  
-`help <command>` Gives you a list of commands you can use or details on specific command(s)  
-`bot` Tells you information about the bot  
-`ping` Pings the bot, useful for seeing if it's alive  
-`roll <amount>d<sides>+<modifier>` Rolls DnD style dice  
-`8ball` Asks a magic 8ball for a fortune  
-`save <key> <message>` Saves a personalized message with a given key  
-`recall <key>` Lists your saved messages or recalls a saved message with a given key  
-`delete <key>` Deletes a saved message with a given key  
-`insult` (**Not implemented yet**) Calls the bot to your voice channel to deliver a special insult  
-`addsong <link>` Adds a song to the song queue via a youtube link  
-`yt <query>` Searches for a youtube video to add to the song queue  
-`sc <query>` (**Not implemented yet**) Searches for a soundcloud track to add to the song queue  
-`play` Resumes the current song  
-`pause` Pauses the current song  
-`next` Skips to the next song in the queue  
-`clear` Clears the song queue  
-`song` Gives you information about the currently playing song  
-`music` Gives you a list of the songs currently in the queue
-
+### Current Commands
+`!help <command> | --all`: Gives you a list of commands you can use or details on specific command(s)  
+`!bot`: Tells you information about the bot  
+`!ping`: Pings the bot, useful for seeing if it's alive  
+`!roll <amount>d<sides>+<modifier>`: Rolls DnD style dice  
+`!8ball`: Asks a magic 8ball for a fortune  
+`!save <key> <message>`: Saves a personalized message with a given key  
+`!recall <key>`: Lists your saved messages or recalls a saved message with a given key  
+`!delete <key>`: Deletes a saved message with a given key  
+`!insult`: (NOT DONE) Call the bot to your voice channel to deliver a special insult  
+`!addsong <link>`: Adds a song to the song queue via a youtube link  
+`!yt <query>`: Searches for a youtube video to add to the song queue  
+`!sc <query>`: (NOT DONE) Searches for a soundcloud track to add to the song queue  
+`!play`: Resumes the current song  
+`!pause`: Pauses the current song  
+`!next`: Skips to the next song in the queue  
+`!prev`: Skips to the previous song in the queue  
+`!clear`: Clears the song queue  
+`!song`: Gives you information about the currently playing song  
+`!music`: Gives you a list of the songs currently in the queue  
+### Example Command
 A command in the commands object consists of three parts: usage, description, and its process.
 ```
 "command": {

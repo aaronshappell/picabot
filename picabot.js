@@ -206,7 +206,7 @@ var commands = {
     },
     "insult": {
         "usage": "",
-        "description": "Call the bot to your voice channel to deliver a special insult",
+        "description": "(NOT DONE) Call the bot to your voice channel to deliver a special insult",
         "process": function(message, args){
             message.reply("There are currently no insults :sob:");
         }
@@ -258,7 +258,7 @@ var commands = {
     },
     "sc": {
         "usage": "<query>",
-        "description": "Searches for a soundcloud track to add to the song queue",
+        "description": "(NOT DONE) Searches for a soundcloud track to add to the song queue",
         "process": function(message, args){
             message.reply("No soundcloud support yet :cry:");
 
@@ -332,13 +332,13 @@ var commands = {
             }
         }
     },
-    "next": {
+    "prev": {
         "usage": "",
-        "description": "Skips to the next song in the queue",
+        "description": "Skips to the previous song in the queue",
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length > 0){
-                    dispatcher.end("next");
+                    dispatcher.end("prev");
                 } else{
                     message.reply("There are no more songs :sob:");
                 }
@@ -347,13 +347,13 @@ var commands = {
             }
         }
     },
-    "prev": {
+    "next": {
         "usage": "",
-        "description": "Skips to the previous song in the queue",
+        "description": "Skips to the next song in the queue",
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length > 0){
-                    dispatcher.end("prev");
+                    dispatcher.end("next");
                 } else{
                     message.reply("There are no more songs :sob:");
                 }
