@@ -453,6 +453,7 @@ var playSong = function(message, connection){
     dispatcher = connection.playStream(stream);
     message.channel.send(`Now playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
     dispatcher.on("end", function(reason){
+        console.log("Song ended because: " + reason);
         if(reason === "user"){
             currentSongIndex++;
             if(currentSongIndex < songQueue.length){
