@@ -452,19 +452,23 @@ var playSong = function(message, connection){
     var stream = ytdl(currentSong.url, {"filter": "audioonly"});
     dispatcher = connection.playStream(stream);
     message.channel.send(`Now playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
-    dispatcher.on("end", function(reason){
+    dispatcher.player.on("warn", console.warn);
+    dispatcher.on("warn", console.warn);
+    dispatcher.on("error", console.error);
+    dispatcher.once("end", function(reason){
         console.log("Song ended because: " + reason);
         if(reason === "user"){
             currentSongIndex++;
             if(currentSongIndex < songQueue.length){
-                playSong(message, connection);
+                setTimeout(function(){
+                    playSong(message, connection);
+                }, 500);
             }
         } else if(reason === "prev" || reason === "next" || reason === "goto"){
-            playSong(message, connection);
+            setTimeout(function(){
+                playSong(message, connection);
+            }, 500);
         }
-    });
-    dispatcher.on("error", function(err){
-        console.log(err);
     });
 }
 
