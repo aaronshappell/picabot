@@ -17,6 +17,7 @@ const prefix = "!";
 var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
 var dispatcher;
 var songQueue = [];
+var currentSongIndex = -1;
 
 var commands = {
     "help": {
@@ -329,7 +330,22 @@ var commands = {
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length > 0){
-                    dispatcher.end();
+                    dispatcher.end("next");
+                } else{
+                    message.reply("There are no more songs :sob:");
+                }
+            } else{
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
+            }
+        }
+    },
+    "prev": {
+        "usage": "",
+        "description": "Skips to the previous song in the queue",
+        "process": function(message, args){
+            if(message.member.voiceChannel !== undefined){
+                if(songQueue.length > 0){
+                    dispatcher.end("prev");
                 } else{
                     message.reply("There are no more songs :sob:");
                 }
@@ -346,9 +362,7 @@ var commands = {
                 if(songQueue.length === 0){
                     message.reply("There are no songs to clear");
                 } else{
-                    songQueue = [];
-                    dispatcher.end();
-                    message.reply("The song queue has been cleared");
+                    dispatcher.end("clear");
                 }
             } else{
                 message.reply("You can't hear my music if you're not in a voice channel :cry:");
@@ -360,7 +374,7 @@ var commands = {
         "description": "Gives you information about the currently playing song",
         "process": function(message, args){
             if(songQueue.length > 0){
-                message.reply(`The current song is \`${songQueue[0].title}\` :musical_note:, added by ${songQueue[0].user}`);
+                message.reply(`The current song is \`${songQueue[currentSongIndex].title}\` :musical_note:, added by ${songQueue[currentSongIndex].user}`);
             } else{
                 message.reply("No song is in the queue");
             }
@@ -372,10 +386,17 @@ var commands = {
         "process": function(message, args){
             if(songQueue.length > 0){
                 var songList = "";
-                for(var i = 0; i < songQueue.length - 1; i++){
-                    songList += `\`${songQueue[i].title}\`\n`;
+                for(var i = 0; i < songQueue.length; i++){
+                    if(i < currentSongIndex){
+                        songList += `${songQueue[i].title}\n`;
+                    } else{
+                        songList += `\`${songQueue[i].title}\``;
+                        if(i === currentSongIndex){
+                            songList += " <";
+                        }
+                        songList += "\n";
+                    }
                 }
-                songList += `\`${songQueue[songQueue.length - 1].title}\``;
                 message.reply("The song queue currently has:\n" + songList);
             } else{
                 message.reply("No song is in the queue");
@@ -394,6 +415,7 @@ var addSong = function(message, url){
         message.reply(`I have added \`${info.title}\` to the song queue! :headphones:`);
         if(songQueue.length === 1){
             message.member.voiceChannel.join().then(function(connection){
+                currentSongIndex++;
                 playSong(message, connection);
             }).catch(console.log);
         }
@@ -403,16 +425,38 @@ var addSong = function(message, url){
 }
 
 var playSong = function(message, connection){
-    var stream = ytdl(songQueue[0].url, {"filter": "audioonly"});
+    var currentSong = songQueue[currentSongIndex];
+    var stream = ytdl(currentSong.url, {"filter": "audioonly"});
     dispatcher = connection.playStream(stream);
-    message.channel.send(`Now playing \`${songQueue[0].title}\` :musical_note:, added by ${songQueue[0].user}`);
-    dispatcher.on("end", function(){
-        songQueue.shift();
-        if(songQueue.length === 0){
-            message.channel.send("There are no more songs :sob:");
-            message.member.voiceChannel.leave();
-        } else{
-            playSong(message, connection);
+    message.channel.send(`Now playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
+    dispatcher.on("end", function(reason){
+        switch(reason){
+            case "user":
+                currentSongIndex++;
+                if(currentSongIndex < songQueue.length){
+                    playSong(message, connection);
+                }
+                break;
+            case "prev":
+                currentSongIndex--;
+                if(currentSongIndex < 0){
+                    currentSongIndex = 0;
+                }
+                playSong(message, connection);
+                break;
+            case "next":
+                currentSongIndex++;
+                if(currentSongIndex >= songQueue.length){
+                    currentSongIndex = songQueue.length - 1;
+                }
+                playSong(message, connection);
+                break;
+            case "clear":
+                currentSongIndex = -1;
+                songQueue = [];
+                message.member.voiceChannel.leave();
+                message.reply("The song queue has been cleared");
+                break;
         }
     });
 }
