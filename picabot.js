@@ -21,11 +21,11 @@ var currentSongIndex = -1;
 
 var commands = {
     "help": {
-        "usage": "<command>",
+        "usage": "<command> | --all",
         "description": "Gives you a list of commands you can use or details on specific command(s)",
         "process": function(message, args){
+            var commandKeys = Object.keys(commands);
             if(args.length === 0){
-                var commandKeys = Object.keys(commands);
                 var commandList = "";
                 for(var i = 0; i < commandKeys.length - 1; i++){
                     commandList += `\`${commandKeys[i]}\`, `;
@@ -34,13 +34,21 @@ var commands = {
                 message.reply("My current commands are: " + commandList);
                 message.channel.send(`You can use \`${prefix}help <command>\` to learn more about a command!`);
             } else{
-                for(var i = 0; i < args.length; i++){
-                    try{
-                        message.channel.send(`\`!${args[i]} ${commands[args[i]].usage}\`: ${commands[args[i]].description}`);
-                    } catch(e){
-                        message.channel.send(`\`!${args[i]}\`: Not a command`);
+                var helpList = "";
+                if(args[0] === "--all"){
+                    for(var i = 0; i < commandKeys.length; i++){
+                        helpList += `\`!${commandKeys[i]} ${commands[commandKeys[i]].usage}\`: ${commands[commandKeys[i]].description}\n`;
+                    }
+                } else{
+                    for(var i = 0; i < args.length; i++){
+                        try{
+                            helpList += `\`!${args[i]} ${commands[args[i]].usage}\`: ${commands[args[i]].description}\n`;
+                        } catch(e){
+                            helpList += `\`!${args[i]}\`: Not a command\n`;
+                        }
                     }
                 }
+                message.channel.send(helpList);
             }
         }
     },
