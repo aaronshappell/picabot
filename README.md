@@ -34,8 +34,8 @@ Soon to come...
 `!yt <query>`: Searches for a youtube video to add to the song queue  
 `!play`: Resumes the current song  
 `!pause`: Pauses the current song  
-`!next`: Skips to the next song in the queue  
-`!prev`: Skips to the previous song in the queue  
+`!prev <amount>`: Skips back in the queue by a certain amount of songs  
+`!next <amount>`: Skips ahead in the queue by a certain amount of songs  
 `!clear`: Clears the song queue  
 `!song`: Gives you information about the currently playing song  
 `!music`: Gives you a list of the songs currently in the queue  

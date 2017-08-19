@@ -290,11 +290,20 @@ var commands = {
         }
     },
     "prev": {
-        "usage": "",
-        "description": "Skips to the previous song in the queue",
+        "usage": "<amount>",
+        "description": "Skips back in the queue by a certain amount of songs",
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length > 0){
+                    var amount = Number.parseInt(args[0]);
+                    if(Number.isInteger(amount)){
+                        currentSongIndex -= amount;
+                    } else{
+                        currentSongIndex--;
+                    }
+                    if(currentSongIndex < 0){
+                        currentSongIndex = 0;
+                    }
                     dispatcher.end("prev");
                 } else{
                     message.reply("There are no more songs :sob:");
@@ -305,11 +314,20 @@ var commands = {
         }
     },
     "next": {
-        "usage": "",
-        "description": "Skips to the next song in the queue",
+        "usage": "<amount>",
+        "description": "Skips ahead in the queue by a certain amount of songs",
         "process": function(message, args){
             if(message.member.voiceChannel !== undefined){
                 if(songQueue.length > 0){
+                    var amount = Number.parseInt(args[0]);
+                    if(Number.isInteger(amount)){
+                        currentSongIndex += amount;
+                    } else{
+                        currentSongIndex++;
+                    }
+                    if(currentSongIndex >= songQueue.length){
+                        currentSongIndex = songQueue.length - 1;
+                    }
                     dispatcher.end("next");
                 } else{
                     message.reply("There are no more songs :sob:");
@@ -328,6 +346,10 @@ var commands = {
                     message.reply("There are no songs to clear");
                 } else{
                     dispatcher.end("clear");
+                    currentSongIndex = -1;
+                    songQueue = [];
+                    message.member.voiceChannel.leave();
+                    message.reply("The song queue has been cleared");
                 }
             } else{
                 message.reply("You can't hear my music if you're not in a voice channel :cry:");
@@ -395,33 +417,13 @@ var playSong = function(message, connection){
     dispatcher = connection.playStream(stream);
     message.channel.send(`Now playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
     dispatcher.on("end", function(reason){
-        switch(reason){
-            case "user":
-                currentSongIndex++;
-                if(currentSongIndex < songQueue.length){
-                    playSong(message, connection);
-                }
-                break;
-            case "prev":
-                currentSongIndex--;
-                if(currentSongIndex < 0){
-                    currentSongIndex = 0;
-                }
+        if(reason === "user"){
+            currentSongIndex++;
+            if(currentSongIndex < songQueue.length){
                 playSong(message, connection);
-                break;
-            case "next":
-                currentSongIndex++;
-                if(currentSongIndex >= songQueue.length){
-                    currentSongIndex = songQueue.length - 1;
-                }
-                playSong(message, connection);
-                break;
-            case "clear":
-                currentSongIndex = -1;
-                songQueue = [];
-                message.member.voiceChannel.leave();
-                message.reply("The song queue has been cleared");
-                break;
+            }
+        } else if(reason === "prev" || reason === "next"){
+            playSong(message, connection);
         }
     });
 }
