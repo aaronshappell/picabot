@@ -463,6 +463,9 @@ var playSong = function(message, connection){
             playSong(message, connection);
         }
     });
+    dispatcher.on("error", function(err){
+        console.log(err);
+    });
 }
 
 var checkForCommand = function(message){
