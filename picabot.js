@@ -325,10 +325,36 @@ var commands = {
                     } else{
                         currentSongIndex++;
                     }
-                    if(currentSongIndex >= songQueue.length){
+                    if(currentSongIndex > songQueue.length - 1){
                         currentSongIndex = songQueue.length - 1;
                     }
                     dispatcher.end("next");
+                } else{
+                    message.reply("There are no more songs :sob:");
+                }
+            } else{
+                message.reply("You can't hear my music if you're not in a voice channel :cry:");
+            }
+        }
+    },
+    "goto": {
+        "usage": "<index>",
+        "description": "Skips to a certain song in the queue by its index",
+        "process": function(message, args){
+            if(message.member.voiceChannel !== undefined){
+                if(songQueue.length > 0){
+                    var index = Number.parseInt(args[0]);
+                    if(Number.isInteger(index)){
+                        currentSongIndex = index - 1;
+                        if(currentSongIndex < 0){
+                            currentSongIndex = 0;
+                        } else if(currentSongIndex > songQueue.length - 1){
+                            currentSongIndex = songQueue.length - 1;
+                        }
+                        dispatcher.end("goto");
+                    } else{
+                        message.reply(`\`${args[0]}\` is an invalid index`);
+                    }
                 } else{
                     message.reply("There are no more songs :sob:");
                 }
@@ -375,11 +401,11 @@ var commands = {
                 var songList = "";
                 for(var i = 0; i < songQueue.length; i++){
                     if(i < currentSongIndex){
-                        songList += `${songQueue[i].title}\n`;
+                        songList += `${i + 1}. ${songQueue[i].title}\n`;
                     } else{
-                        songList += `\`${songQueue[i].title}\``;
+                        songList += `${i + 1}. \`${songQueue[i].title}\``;
                         if(i === currentSongIndex){
-                            songList += " <";
+                            songList += " <<<";
                         }
                         songList += "\n";
                     }
@@ -422,7 +448,7 @@ var playSong = function(message, connection){
             if(currentSongIndex < songQueue.length){
                 playSong(message, connection);
             }
-        } else if(reason === "prev" || reason === "next"){
+        } else if(reason === "prev" || reason === "next" || reason === "goto"){
             playSong(message, connection);
         }
     });

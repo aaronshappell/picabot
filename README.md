@@ -36,6 +36,7 @@ Soon to come...
 `!pause`: Pauses the current song  
 `!prev <amount>`: Skips back in the queue by a certain amount of songs  
 `!next <amount>`: Skips ahead in the queue by a certain amount of songs  
+`!goto <index>`: Skips to a certain song in the queue by its index  
 `!clear`: Clears the song queue  
 `!song`: Gives you information about the currently playing song  
 `!music`: Gives you a list of the songs currently in the queue  
