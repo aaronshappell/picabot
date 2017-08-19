@@ -13,7 +13,7 @@ First install nodejs and npm. Download them for your system [here](https://nodej
 You can then install the bot by cloning the git repo with `git clone https://github.com/aaronshappell/picabot.git`. Then you must install the necessary dependencies with `npm install` in the project directory. Make sure you have a `.env` file with your bot token and google api key as `BOTTOKEN` and `GOOGLEAPIKEY` respectively. See [example.env](https://github.com/aaronshappell/picabot/blob/master/example.env) for details.  
 You can run the bot with `node ./` from within the project directory. It will print `Bot ready` when the bot is ready to recieve commands.
 ### Heroku
-Make sure you have set your config variables in heroku (environment variables) with your bot token and google api key as `BOTTOKEN` and `GOOGLEAPIKEY` respectively.  
+Make sure you have set your config variables in heroku (environment variables) with your bot token and google api key as `BOTTOKEN` and `GOOGLEAPIKEY` respectively. You also need to add a [ffmpeg buildpack](https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest) to your project for voice to work.  
 You can run the bot by pushing to your remote heroku repository or on the website. Doing so will automatically install the necessary dependencies for your dyno instance. On the resources tab of your heroku app turn off the web dyno and turn on the worker dyno. You can check the log with `heroku logs --tail` to verify that your bot is running and you will see `Bot ready`.  
 **Note:** messages saved with the `save` command will not be permanently saved due to heroku's ephemeral file system and the dyno lifecycle.
 ### Google Compute Engine
