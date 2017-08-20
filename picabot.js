@@ -11,6 +11,7 @@ var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes d
 var dispatcher;
 var songQueue = [];
 var currentSongIndex = 0;
+var previousSongIndex = 0;
 var shuffle = false;
 
 var commands = {
@@ -296,6 +297,7 @@ var commands = {
 		"process": function(message, args){
 			if(message.member.voiceChannel !== undefined){
 				if(songQueue.length > 0){
+					previousSongIndex = currentSongIndex;
 					var amount = Number.parseInt(args[0]);
 					if(Number.isInteger(amount)){
 						currentSongIndex -= amount;
@@ -320,6 +322,7 @@ var commands = {
 		"process": function(message, args){
 			if(message.member.voiceChannel !== undefined){
 				if(songQueue.length > 0){
+					previousSongIndex = currentSongIndex;
 					var amount = Number.parseInt(args[0]);
 					if(Number.isInteger(amount)){
 						currentSongIndex += amount;
@@ -346,6 +349,7 @@ var commands = {
 				if(songQueue.length > 0){
 					var index = Number.parseInt(args[0]);
 					if(Number.isInteger(index)){
+						previousSongIndex = currentSongIndex;
 						currentSongIndex = index - 1;
 						if(currentSongIndex < 0){
 							currentSongIndex = 0;
@@ -466,7 +470,9 @@ var addSong = function(message, url){
 
 var playSong = function(message, connection){
 	if(shuffle){
-		currentSongIndex = Math.floor(Math.random() * songQueue.length);
+		do {
+			currentSongIndex = Math.floor(Math.random() * songQueue.length);
+		} while(currentSongIndex === previousSongIndex);
 	}
 	var currentSong = songQueue[currentSongIndex];
 	var stream = ytdl(currentSong.url, {"filter": "audioonly"});
