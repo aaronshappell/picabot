@@ -455,7 +455,6 @@ var addSong = function(message, url){
         songQueue.push(song);
         message.reply(`I have added \`${info.title}\` to the song queue! :headphones:`);
         if(!bot.voiceConnections.exists("channel", message.member.voiceChannel)){
-            console.log(currentSongIndex);
             message.member.voiceChannel.join().then(function(connection){
                 playSong(message, connection);
             }).catch(console.log);
@@ -473,6 +472,9 @@ var playSong = function(message, connection){
     var stream = ytdl(currentSong.url, {"filter": "audioonly"});
     dispatcher = connection.playStream(stream);
     message.channel.send(`Now ${(shuffle) ? "randomly " : ""}playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
+    //bot.user.setGame(currentSong.title);
+    //Workaround since above would'nt work
+    bot.user.setPresence({ game: { name: currentSong.title, type: 0 } });
     dispatcher.player.on("warn", console.warn);
     dispatcher.on("warn", console.warn);
     dispatcher.on("error", console.error);
@@ -508,7 +510,9 @@ var checkForCommand = function(message){
     }
 }
 
-bot.on("ready", function(){console.log("Bot ready")});
+bot.on("ready", function(){
+    console.log("Bot ready");
+});
 bot.on("disconnect", function(){
     console.log("Bot disconnected");
     process.exit(1);
@@ -517,8 +521,12 @@ bot.on("guildMemberAdd", function(member){
     member.guild.defaultChannel.send(`Welcome to the server, ${member}! :smile:`);
     member.guild.defaultChannel.send(`You can type \`${prefix}help\` at anytime to see my commands`);
 });
-bot.on("message", function(message){checkForCommand(message)});
-bot.on("messageUpdate", function(oldMessage, newMessage){checkForCommand(newMessage)});
+bot.on("message", function(message){
+    checkForCommand(message);
+});
+bot.on("messageUpdate", function(oldMessage, newMessage){
+    checkForCommand(newMessage);
+});
 
 bot.login(process.env.BOTTOKEN).then(function(){
     console.log("Bot logged in");
