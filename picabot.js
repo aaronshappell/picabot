@@ -10,7 +10,7 @@ const prefix = "!";
 var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
 var dispatcher;
 var songQueue = [];
-var currentSongIndex = -1;
+var currentSongIndex = 0;
 var shuffle = false;
 
 var commands = {
@@ -432,14 +432,10 @@ var commands = {
             if(songQueue.length > 0){
                 var songList = "";
                 for(var i = 0; i < songQueue.length; i++){
-                    if(i < currentSongIndex){
-                        songList += `${i + 1}. ${songQueue[i].title}\n`;
+                    if(i === currentSongIndex){
+                        songList += `__**\`${i + 1}. ${songQueue[i].title}\`**__\n`;
                     } else{
-                        songList += `${i + 1}. \`${songQueue[i].title}\``;
-                        if(i === currentSongIndex){
-                            songList += " <<<";
-                        }
-                        songList += "\n";
+                        songList += `\`${i + 1}. ${songQueue[i].title}\`\n`;
                     }
                 }
                 message.reply("The song queue currently has:\n" + songList);
@@ -458,9 +454,9 @@ var addSong = function(message, url){
         song.user = message.author.username;
         songQueue.push(song);
         message.reply(`I have added \`${info.title}\` to the song queue! :headphones:`);
-        if(songQueue.length === 1){
+        if(!bot.voiceConnections.exists("channel", message.member.voiceChannel)){
+            console.log(currentSongIndex);
             message.member.voiceChannel.join().then(function(connection){
-                currentSongIndex++;
                 playSong(message, connection);
             }).catch(console.log);
         }
@@ -484,7 +480,9 @@ var playSong = function(message, connection){
         console.log("Song ended because: " + reason);
         if(reason === "user" || reason === "Stream is not generating quickly enough."){
             currentSongIndex++;
-            if(currentSongIndex < songQueue.length){
+            if(currentSongIndex >= songQueue.length){
+                message.member.voiceChannel.leave();
+            } else{
                 setTimeout(function(){
                     playSong(message, connection);
                 }, 500);
