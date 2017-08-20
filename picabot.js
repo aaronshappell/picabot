@@ -374,6 +374,7 @@ var commands = {
 				} else if(args.length > 0){
 					var index = Number.parseInt(args[0]);
 					if(Number.isInteger(index)){
+						message.reply(`\`${songQueue[index - 1].title}\` has been removed from the song queue`);
 						songQueue.splice(index - 1, 1);
 						if(index - 1 <= currentSongIndex){
 							currentSongIndex--;
