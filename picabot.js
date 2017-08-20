@@ -402,16 +402,12 @@ var commands = {
 		"description": "Toggles shuffling of the song queue",
 		"process": function(message, args){
 			if(message.member.voiceChannel !== undefined){
-				if(songQueue.length === 0){
-					message.reply("There are no songs to shuffle");
+				if(shuffle){
+					shuffle = false;
+					message.reply("Shuffle is now disabled");
 				} else{
-					if(shuffle){
-						shuffle = false;
-						message.reply("Shuffle is now disabled");
-					} else{
-						shuffle = true;
-						message.reply("Shuffle is now enabled");
-					}
+					shuffle = true;
+					message.reply("Shuffle is now enabled");
 				}
 			} else{
 				message.reply("You can't hear my music if you're not in a voice channel :cry:");
