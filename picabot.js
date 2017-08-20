@@ -482,7 +482,7 @@ var playSong = function(message, connection){
 		console.log("Song ended because: " + reason);
 		if(reason === "user" || reason === "Stream is not generating quickly enough."){
 			currentSongIndex++;
-			if(currentSongIndex >= songQueue.length){
+			if(currentSongIndex >= songQueue.length && !shuffle){
 				//bot.user.setGame(currentSong.title);
 				//Workaround since above wouldn't work
 				bot.user.setPresence({ game: { name: "", type: 0 } });
