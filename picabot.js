@@ -388,7 +388,7 @@ var commands = {
 					}
 				} else{
 					dispatcher.end("clear");
-					currentSongIndex = -1;
+					currentSongIndex = 0;
 					songQueue = [];
 					//bot.user.setGame(currentSong.title);
 					//Workaround since above wouldn't work
