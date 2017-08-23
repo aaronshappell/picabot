@@ -368,6 +368,22 @@ var commands = {
 			}
 		}
 	},
+	"random": {
+		"usage": "",
+		"description": "Chooses a random song from the queue to play.",
+		"process": function(message, args){
+			if(message.member.voiceChannel !== undefined){
+				if(songQueue.length > 0){
+					currentSongIndex = Math.floor(Math.random() * songQueue.length);
+					dispatcher.end("random");
+				} else{
+					message.reply("There are no more songs :sob:");
+				}
+			} else{
+				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+			}
+		}
+	},
 	"clear": {
 		"usage": "<index>",
 		"description": "Clears the song queue or a specific song in the queue",
@@ -498,7 +514,7 @@ var playSong = function(message, connection){
 					playSong(message, connection);
 				}, 500);
 			}
-		} else if(reason === "prev" || reason === "next" || reason === "goto"){
+		} else if(reason === "prev" || reason === "next" || reason === "goto" || reason === "random"){
 			setTimeout(function(){
 				playSong(message, connection);
 			}, 500);
