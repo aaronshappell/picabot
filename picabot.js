@@ -522,16 +522,30 @@ var playSong = function(message, connection){
 		console.log("Song ended because: " + reason);
 		if(reason === "user" || reason === "Stream is not generating quickly enough."){
 			//Need to implement autoremoval here
-			currentSongIndex++;
-			if(currentSongIndex >= songQueue.length && !shuffle){
-				//bot.user.setGame(currentSong.title);
-				//Workaround since above wouldn't work
-				bot.user.setPresence({ game: { name: "", type: 0 } });
-				message.member.voiceChannel.leave();
+			if(autoremove){
+				songQueue.splice(currentSongIndex, 1);
+				if(songQueue.length === 0){
+					//bot.user.setGame(currentSong.title);
+					//Workaround since above wouldn't work
+					bot.user.setPresence({ game: { name: "", type: 0 } });
+					message.member.voiceChannel.leave();
+				} else{
+					setTimeout(function(){
+						playSong(message, connection);
+					}, 500);
+				}
 			} else{
-				setTimeout(function(){
-					playSong(message, connection);
-				}, 500);
+				currentSongIndex++;
+				if(currentSongIndex >= songQueue.length && !shuffle){
+					//bot.user.setGame(currentSong.title);
+					//Workaround since above wouldn't work
+					bot.user.setPresence({ game: { name: "", type: 0 } });
+					message.member.voiceChannel.leave();
+				} else{
+					setTimeout(function(){
+						playSong(message, connection);
+					}, 500);
+				}
 			}
 		} else if(reason === "prev" || reason === "next" || reason === "goto" || reason === "random"){
 			setTimeout(function(){
