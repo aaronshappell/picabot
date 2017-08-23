@@ -13,6 +13,7 @@ var songQueue = [];
 var currentSongIndex = 0;
 var previousSongIndex = 0;
 var shuffle = false;
+var autoremove = false;
 
 var commands = {
 	"help": {
@@ -434,6 +435,23 @@ var commands = {
 			}
 		}
 	},
+	"autoremove": {
+		"usage": "",
+		"description": "Toggles autoremoving songs of the song queue",
+		"process": function(message, args){
+			if(message.member.voiceChannel !== undefined){
+				if(autoremove){
+					autoremove = false;
+					message.reply("Song autoremoval is now disabled");
+				} else{
+					autoremove = true;
+					message.reply("Song autoremoval is now enabled");
+				}
+			} else{
+				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+			}
+		}
+	},
 	"song": {
 		"usage": "",
 		"description": "Gives you information about the currently playing song",
@@ -503,6 +521,7 @@ var playSong = function(message, connection){
 	dispatcher.once("end", function(reason){
 		console.log("Song ended because: " + reason);
 		if(reason === "user" || reason === "Stream is not generating quickly enough."){
+			//Need to implement autoremoval here
 			currentSongIndex++;
 			if(currentSongIndex >= songQueue.length && !shuffle){
 				//bot.user.setGame(currentSong.title);

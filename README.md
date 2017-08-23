@@ -40,6 +40,7 @@ Soon to come...
 `!random`: Chooses a random song from the queue to play.  
 `!clear <index>`: Clears the song queue or a specific song in the queue  
 `!shuffle`: Toggles shuffling of the song queue  
+`!autoremove`: Toggles autoremoving songs of the song queue  
 `!song`: Gives you information about the currently playing song  
 `!music`: Gives you a list of the songs currently in the queue  
 ### Example Command
