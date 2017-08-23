@@ -7,6 +7,8 @@ const youtube = google.youtube("v3");
 
 const bot = new Discord.Client();
 const prefix = "!";
+const botChannelName = "bot-commands";
+var botChannel;
 var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
 var dispatcher;
 var songQueue = [];
@@ -27,8 +29,8 @@ var commands = {
 					commandList += `\`${commandKeys[i]}\`, `;
 				}
 				commandList += `and \`${commandKeys[commandKeys.length - 1]}\``;
-				message.reply("My current commands are: " + commandList);
-				message.channel.send(`You can use \`${prefix}help <command>\` to learn more about a command!`);
+				botChannel.send("My current commands are: " + commandList, {reply: message});
+				botChannel.send(`You can use \`${prefix}help <command>\` to learn more about a command!`);
 			} else{
 				var helpList = "";
 				if(args[0] === "--all"){
@@ -44,7 +46,7 @@ var commands = {
 						}
 					}
 				}
-				message.channel.send(helpList);
+				botChannel.send(helpList, {reply: message});
 			}
 		}
 	},
@@ -52,15 +54,15 @@ var commands = {
 		"usage": "",
 		"description": "Tells you information about the bot",
 		"process": function(message, args){
-			message.reply("I am a discord bot for didney worl who has an appetite for non-nutritive substances");
-			message.channel.send("If you have any suggestions or command ideas for me tell @Crumster or your local amin");
+			botChannel.send("I am a discord bot for didney worl who has an appetite for non-nutritive substances", {reply: message});
+			botChannel.send("If you have any suggestions or command ideas for me tell @Crumster or your local amin");
 		}
 	},
 	"ping": {
 		"usage": "",
 		"description": "Pings the bot, useful for seeing if it's alive",
 		"process": function(message, args){
-			message.reply("Pong :ping_pong:");
+			botChannel.send("Pong :ping_pong:", {reply: message});
 		}
 	},
 	"roll": {
@@ -68,17 +70,17 @@ var commands = {
 		"description": "Rolls DnD style dice",
 		"process": function(message, args){
 			if(Math.floor(Math.random() * 100 + 1) === 1){
-				message.channel.send("You tried to roll a `die` :game_die: and got: `rick`");
-				message.channel.send("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+				botChannel.send("You tried to roll a `die` :game_die: and got: `rick`", {reply: message});
+				botChannel.send("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 				return;
 			}
 			if(args.length === 0){
-				message.reply(`You rolled \`1d6\` :game_die: and got: \`${Math.floor(Math.random() * 6 + 1)}\``);
+				botChannel.send(`You rolled \`1d6\` :game_die: and got: \`${Math.floor(Math.random() * 6 + 1)}\``, {reply: message});
 			} else{
 				for(var i = 0; i < args.length; i++){
 					var regex = args[i].match(/^(\d*)d(\d+)\+?(\d*)$/);
 					if(regex === null){
-						message.channel.send(`\`${args[i]}\` is not a valid die`);
+						botChannel.send(`\`${args[i]}\` is not a valid die`, {reply: message});
 					} else{
 						if(regex[1] === "") regex[1] = 1;
 						if(regex[3] === "") regex[3] = 0;
@@ -93,7 +95,7 @@ var commands = {
 						roll = Math.floor(Math.random() * Number.parseInt(regex[2]) + 1);
 						sum += roll;
 						rolls += roll + ") + " + regex[3] + " = " + (sum + Number.parseInt(regex[3]));
-						message.channel.send(`You rolled \`${args[i]}\` :game_die: and got: \`${rolls}\``);
+						botChannel.send(`You rolled \`${args[i]}\` :game_die: and got: \`${rolls}\``, {reply: message});
 					}
 				}
 			}
@@ -103,16 +105,16 @@ var commands = {
 		"usage": "",
 		"description": "Asks a magic 8ball for a fortune",
 		"process": function(message, args){
-			message.reply(fortunes[Math.floor(Math.random() * fortunes.length)]);
+			botChannel.send(fortunes[Math.floor(Math.random() * fortunes.length)], {reply: message});
 		}
 	},
 	"save": {
 		"usage": "<key> <message>",
 		"description": "Saves a personalized message with a given key",
 		"process": function(message, args){
-			message.reply("**Disclaimer:** your message will not be permanantly saved and will delete upon bot restart (for now)");
+			botChannel.send("**Disclaimer:** your message will not be permanantly saved and will delete upon bot restart (for now)", {reply: message});
 			if(args.length < 2){
-				message.reply(`Save a message with \`${prefix}save <key> <message>\``);
+				botChannel.send(`Save a message with \`${prefix}save <key> <message>\``, {reply: message});
 				return;
 			}
 			var key = args[0];
@@ -130,7 +132,7 @@ var commands = {
 				save[message.author.username][key] = messageToSave;
 				fs.writeFile("save.json", JSON.stringify(save), "utf8", function(err){
 					if(err) throw err;
-					message.reply(`Your message has been saved as \`${key}\`! :tada:`);
+					botChannel.send(`Your message has been saved as \`${key}\`! :tada:`, {reply: message});
 				});
 			});
 		}
@@ -148,28 +150,28 @@ var commands = {
 					try{
 						messageKeys = Object.keys(save[message.author.username]);
 					} catch(e){
-						message.reply("You have no saved messages, try saving one!");
+						botChannel.send("You have no saved messages, try saving one!", {reply: message});
 						return;
 					}
 					if(messageKeys.length === 0){
-						message.reply("You have no saved messages, try saving one!");
+						botChannel.send("You have no saved messages, try saving one!", {reply: message});
 						return;
 					}
 					for(var i = 0; i < messageKeys.length - 1; i++){
 						savedMessages += messageKeys[i] + ", ";
 					}
 					savedMessages += messageKeys[messageKeys.length - 1];
-					message.reply("Your saved messages are: " + savedMessages);
+					botChannel.send("Your saved messages are: " + savedMessages, {reply: message});
 				} else{
 					var key = args[0];
 					var recalledMessage;
 					try{
 						recalledMessage = save[message.author.username][key];
 					} catch(e){
-						message.reply(`You don't have a saved message with the key \`${key}\``);
+						botChannel.send(`You don't have a saved message with the key \`${key}\``, {reply: message});
 						return;
 					}
-					message.reply(recalledMessage);
+					botChannel.send(recalledMessage, {reply: message});
 				}
 			});
 		}
@@ -182,19 +184,19 @@ var commands = {
 				if(err) throw err;
 				var save = JSON.parse(data);
 				if(args.length === 0){
-					message.reply(`Delete a saved message with \`${prefix}delete <key>\``);
+					botChannel.send(`Delete a saved message with \`${prefix}delete <key>\``, {reply: message});
 					return;
 				} else{
 					var key = args[0];
 					try{
 						delete save[message.author.username][key];
 					} catch(e){
-						message.reply(`You don't have a saved message with the key \`${key}\``);
+						botChannel.send(`You don't have a saved message with the key \`${key}\``, {reply: message});
 						return;
 					}
 					fs.writeFile("save.json", JSON.stringify(save), "utf8", function(err){
 						if(err) throw err;
-						message.reply(`Your message \`${key}\` has been deleted! :tada:`);
+						botChannel.send(`Your message \`${key}\` has been deleted! :tada:`, {reply: message});
 					});
 				}
 			});
@@ -204,7 +206,7 @@ var commands = {
 		"usage": "",
 		"description": "(NOT DONE) Call the bot to your voice channel to deliver a special insult",
 		"process": function(message, args){
-			message.reply("There are currently no insults :sob:");
+			botChannel.send("There are currently no insults :sob:", {reply: message});
 		}
 	},
 	"addsong": {
@@ -214,7 +216,7 @@ var commands = {
 			if(message.member.voiceChannel !== undefined){
 				addSong(message, args[0]);
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -237,7 +239,7 @@ var commands = {
 						"part": "snippet"
 					}, function(err, data){
 						if(err){
-							message.reply("There was an error searching for your song :cry:");
+							botChannel.send("There was an error searching for your song :cry:", {reply: message});
 							console.log("Error: " + err);
 						}
 						if(data){
@@ -245,10 +247,10 @@ var commands = {
 						}
 					});
 				} else{
-					message.reply(`You can search for a youtube song with \`${prefix}yt <query>\``);
+					botChannel.send(`You can search for a youtube song with \`${prefix}yt <query>\``, {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -260,15 +262,15 @@ var commands = {
 				if(songQueue.length > 0){
 					if(dispatcher.paused){
 						dispatcher.resume();
-						message.reply("Song resumed! :play_pause:");
+						botChannel.send("Song resumed! :play_pause:", {reply: message});
 					} else{
-						message.reply("Song is already playing");
+						botChannel.send("Song is already playing", {reply: message});
 					}
 				} else{
-					message.reply("No song is in the queue");
+					botChannel.send("No song is in the queue", {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -280,15 +282,15 @@ var commands = {
 				if(songQueue.length > 0){
 					if(!dispatcher.paused){
 						dispatcher.pause();
-						message.reply("Song paused! :pause_button:");
+						botChannel.send("Song paused! :pause_button:", {reply: message});
 					} else{
-						message.reply("Song is already paused");
+						botChannel.send("Song is already paused", {reply: message});
 					}
 				} else{
-					message.reply("No song is in the queue");
+					botChannel.send("No song is in the queue", {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -310,10 +312,10 @@ var commands = {
 					}
 					dispatcher.end("prev");
 				} else{
-					message.reply("There are no more songs :sob:");
+					botChannel.send("There are no more songs :sob:", {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -335,10 +337,10 @@ var commands = {
 					}
 					dispatcher.end("next");
 				} else{
-					message.reply("There are no more songs :sob:");
+					botChannel.send("There are no more songs :sob:", {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -359,13 +361,13 @@ var commands = {
 						}
 						dispatcher.end("goto");
 					} else{
-						message.reply(`\`${args[0]}\` is an invalid index`);
+						botChannel.send(`\`${args[0]}\` is an invalid index`, {reply: message});
 					}
 				} else{
-					message.reply("There are no more songs :sob:");
+					botChannel.send("There are no more songs :sob:", {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -378,10 +380,10 @@ var commands = {
 					currentSongIndex = Math.floor(Math.random() * songQueue.length);
 					dispatcher.end("random");
 				} else{
-					message.reply("There are no more songs :sob:");
+					botChannel.send("There are no more songs :sob:", {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -391,17 +393,17 @@ var commands = {
 		"process": function(message, args){
 			if(message.member.voiceChannel !== undefined){
 				if(songQueue.length === 0){
-					message.reply("There are no songs to clear");
+					botChannel.send("There are no songs to clear", {reply: message});
 				} else if(args.length > 0){
 					var index = Number.parseInt(args[0]);
 					if(Number.isInteger(index)){
-						message.reply(`\`${songQueue[index - 1].title}\` has been removed from the song queue`);
+						botChannel.send(`\`${songQueue[index - 1].title}\` has been removed from the song queue`, {reply: message});
 						songQueue.splice(index - 1, 1);
 						if(index - 1 <= currentSongIndex){
 							currentSongIndex--;
 						}
 					} else{
-						message.reply(`\`${args[0]}\` is an invalid index`);
+						botChannel.send(`\`${args[0]}\` is an invalid index`, {reply: message});
 					}
 				} else{
 					dispatcher.end("clear");
@@ -411,10 +413,10 @@ var commands = {
 					//Workaround since above wouldn't work
 					bot.user.setPresence({ game: { name: "", type: 0 } });
 					message.member.voiceChannel.leave();
-					message.reply("The song queue has been cleared");
+					botChannel.send("The song queue has been cleared", {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -425,13 +427,13 @@ var commands = {
 			if(message.member.voiceChannel !== undefined){
 				if(shuffle){
 					shuffle = false;
-					message.reply("Shuffle is now disabled");
+					botChannel.send("Shuffle is now disabled", {reply: message});
 				} else{
 					shuffle = true;
-					message.reply("Shuffle is now enabled");
+					botChannel.send("Shuffle is now enabled", {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -442,13 +444,13 @@ var commands = {
 			if(message.member.voiceChannel !== undefined){
 				if(autoremove){
 					autoremove = false;
-					message.reply("Song autoremoval is now disabled");
+					botChannel.send("Song autoremoval is now disabled", {reply: message});
 				} else{
 					autoremove = true;
-					message.reply("Song autoremoval is now enabled");
+					botChannel.send("Song autoremoval is now enabled", {reply: message});
 				}
 			} else{
-				message.reply("You can't hear my music if you're not in a voice channel :cry:");
+				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
 	},
@@ -457,9 +459,9 @@ var commands = {
 		"description": "Gives you information about the currently playing song",
 		"process": function(message, args){
 			if(songQueue.length > 0){
-				message.reply(`The current song is \`${songQueue[currentSongIndex].title}\` :musical_note:, added by ${songQueue[currentSongIndex].user}`);
+				botChannel.send(`The current song is \`${songQueue[currentSongIndex].title}\` :musical_note:, added by ${songQueue[currentSongIndex].user}`, {reply: message});
 			} else{
-				message.reply("No song is in the queue");
+				botChannel.send("No song is in the queue", {reply: message});
 			}
 		}
 	},
@@ -476,9 +478,9 @@ var commands = {
 						songList += `\`${i + 1}. ${songQueue[i].title}\`\n`;
 					}
 				}
-				message.reply("The song queue currently has:\n" + songList);
+				botChannel.send("The song queue currently has:\n" + songList, {reply: message});
 			} else{
-				message.reply("No song is in the queue");
+				botChannel.send("No song is in the queue", {reply: message});
 			}
 		}
 	}
@@ -491,14 +493,14 @@ var addSong = function(message, url){
 		song.url = url;
 		song.user = message.author.username;
 		songQueue.push(song);
-		message.reply(`I have added \`${info.title}\` to the song queue! :headphones:`);
+		botChannel.send(`I have added \`${info.title}\` to the song queue! :headphones:`, {reply: message});
 		if(!bot.voiceConnections.exists("channel", message.member.voiceChannel)){
 			message.member.voiceChannel.join().then(function(connection){
 				playSong(message, connection);
 			}).catch(console.log);
 		}
 	}).catch(function(err){
-		message.reply("Sorry I couldn't get info for that song :cry:");
+		botChannel.send("Sorry I couldn't get info for that song :cry:", {reply: message});
 	});
 }
 
@@ -511,7 +513,7 @@ var playSong = function(message, connection){
 	var currentSong = songQueue[currentSongIndex];
 	var stream = ytdl(currentSong.url, {"filter": "audioonly"});
 	dispatcher = connection.playStream(stream);
-	message.channel.send(`Now ${(shuffle) ? "randomly " : ""}playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
+	botChannel.send(`Now ${(shuffle) ? "randomly " : ""}playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
 	//bot.user.setGame(currentSong.title);
 	//Workaround since above wouldn't work
 	bot.user.setPresence({ game: { name: currentSong.title, type: 0 } });
@@ -521,7 +523,6 @@ var playSong = function(message, connection){
 	dispatcher.once("end", function(reason){
 		console.log("Song ended because: " + reason);
 		if(reason === "user" || reason === "Stream is not generating quickly enough."){
-			//Need to implement autoremoval here
 			if(autoremove){
 				songQueue.splice(currentSongIndex, 1);
 				if(songQueue.length === 0){
@@ -557,13 +558,20 @@ var playSong = function(message, connection){
 
 var checkForCommand = function(message){
 	if(!message.author.bot && message.content.startsWith(prefix)){
-		var args = message.content.substring(1).split(" ");
-		var command = args.splice(0, 1);
-		try{
-			commands[command].process(message, args);
-		} catch(e){
-			message.reply("Sorry, that isn't a command yet :sob:");
-			message.channel.send(`You can type \`${prefix}help\` to see a list of my commands`);
+		if(!botChannel){
+			botChannel = message.guild.channels.find("name", "bot-commands");
+		}
+		if(botChannel){
+			var args = message.content.substring(1).split(" ");
+			var command = args.splice(0, 1);
+			try{
+				commands[command].process(message, args);
+			} catch(e){
+				botChannel.send("Sorry, that isn't a command yet :sob:", {reply: message});
+				botChannel.send(`You can type \`${prefix}help\` to see a list of my commands`);
+			}
+		} else{
+			message.channel.send(`Please create a \`${botChannelName}\` channel`);
 		}
 	}
 }
