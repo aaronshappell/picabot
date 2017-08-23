@@ -338,6 +338,11 @@ var commands = {
 					}
 					if(currentSongIndex > songQueue.length - 1){
 						currentSongIndex = songQueue.length - 1;
+						//bot.user.setGame(currentSong.title);
+						//Workaround since above wouldn't work
+						bot.user.setPresence({ game: { name: "", type: 0 } });
+						message.member.voiceChannel.leave();
+						botChannel.send("Finished playing the song queue");
 					}
 					dispatcher.end("next");
 				} else{
