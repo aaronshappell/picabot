@@ -2,7 +2,7 @@
 A discord bot for didney worl who has an appetite for non-nutritive substances
 
 ## Dependencies
-This discord bot uses discord.js, dotenv, ffmpeg-binaries, googleapis, node-opus, and ytdl-core.  
+This discord bot uses discord.js, dotenv, googleapis, node-opus, and ytdl-core.  
 These dependencies are part of the [package.json](https://github.com/aaronshappell/picabot/blob/master/package.json) and can be installed locally via npm.
 
 ## Installation and Running
