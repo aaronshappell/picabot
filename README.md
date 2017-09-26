@@ -21,7 +21,7 @@ Soon to come...
 
 ## Commands
 ### Current Commands
-`!help <command> | --all`: Gives you a list of commands you can use or details on specific command(s)  
+`!help <command> | -a or --all`: Gives you a list of commands you can use or details on specific command(s)  
 `!bot`: Tells you information about the bot  
 `!ping`: Pings the bot, useful for seeing if it's alive  
 `!roll <amount>d<sides>+<modifier>`: Rolls DnD style dice  

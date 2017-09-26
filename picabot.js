@@ -19,7 +19,7 @@ var autoremove = false;
 
 var commands = {
 	"help": {
-		"usage": "<command> | --all",
+		"usage": "<command> | -a or --all",
 		"description": "Gives you a list of commands you can use or details on specific command(s)",
 		"process": function(message, args){
 			var commandKeys = Object.keys(commands);
