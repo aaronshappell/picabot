@@ -551,6 +551,7 @@ var playSong = function(message, connection){
 					//Workaround since above wouldn't work
 					bot.user.setPresence({ game: { name: "", type: 0 } });
 					message.member.voiceChannel.leave();
+					botChannel.send("Finished playing the song queue");
 				} else{
 					setTimeout(function(){
 						playSong(message, connection);
@@ -568,7 +569,7 @@ var playSong = function(message, connection){
 var checkForCommand = function(message){
 	if(!message.author.bot && message.content.startsWith(prefix)){
 		if(!botChannel){
-			botChannel = message.guild.channels.find("name", "bot-commands");
+			botChannel = message.guild.channels.find("name", botChannelName);
 		}
 		if(botChannel){
 			var args = message.content.substring(1).split(" ");
