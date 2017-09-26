@@ -33,7 +33,7 @@ var commands = {
 				botChannel.send(`You can use \`${prefix}help <command>\` to learn more about a command!`);
 			} else{
 				var helpList = "";
-				if(args[0] === "--all"){
+				if(args[0] === "-a" || args[0] === "--all"){
 					for(var i = 0; i < commandKeys.length; i++){
 						helpList += `\`!${commandKeys[i]} ${commands[commandKeys[i]].usage}\`: ${commands[commandKeys[i]].description}\n`;
 					}
