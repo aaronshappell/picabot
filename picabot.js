@@ -95,7 +95,7 @@ var commands = {
 						roll = Math.floor(Math.random() * Number.parseInt(regex[2]) + 1);
 						sum += roll;
 						rolls += roll + ") + " + regex[3] + " = " + (sum + Number.parseInt(regex[3]));
-						botChannel.send(`You rolled \`${args[i]}\` :game_die: and got: \`${rolls}\``, {reply: message});
+						message.channel.send(`You rolled \`${args[i]}\` :game_die: and got: \`${rolls}\``, {reply: message});
 					}
 				}
 			}
