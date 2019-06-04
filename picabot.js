@@ -95,7 +95,7 @@ var commands = {
 						roll = Math.floor(Math.random() * Number.parseInt(regex[2]) + 1);
 						sum += roll;
 						rolls += roll + ") + " + regex[3] + " = " + (sum + Number.parseInt(regex[3]));
-						botChannel.send(`You rolled \`${args[i]}\` :game_die: and got: \`${rolls}\``, {reply: message});
+						message.channel.send(`You rolled \`${args[i]}\` :game_die: and got: \`${rolls}\``, {reply: message});
 					}
 				}
 			}
@@ -567,10 +567,10 @@ var playSong = function(message, connection){
 }
 
 var checkForCommand = function(message){
+	if(!botChannel){
+		botChannel = message.guild.channels.find("name", botChannelName);
+	}
 	if(!message.author.bot && message.content.startsWith(prefix)){
-		if(!botChannel){
-			botChannel = message.guild.channels.find("name", botChannelName);
-		}
 		if(botChannel){
 			var args = message.content.substring(1).split(" ");
 			var command = args.splice(0, 1);
@@ -582,6 +582,17 @@ var checkForCommand = function(message){
 			}
 		} else{
 			message.channel.send(`Please create a \`${botChannelName}\` channel`);
+		}
+	}
+	if(!message.author.bot){
+		var temp = "";
+		if(message.content.substring(0, 3).toLowerCase() === "im "){
+			temp = message.content.substring(3);
+		} else if(message.content.substring(0, 4).toLowerCase() === "i'm "){
+			temp = message.content.substring(4);
+		}
+		if(temp !== ""){
+			message.channel.send("Hi " + temp + ", I'm dad.", {reply: message});
 		}
 	}
 }
