@@ -597,9 +597,10 @@ var checkForCommand = function(message){
 	}
 }
 
-bot.on("ready", function(){
+bot.once("ready", () => {
 	console.log("Bot ready");
 });
+
 bot.on("disconnect", function(){
 	console.log("Bot disconnected");
 	process.exit(1);
@@ -608,7 +609,7 @@ bot.on("guildMemberAdd", function(member){
 	member.guild.defaultChannel.send(`Welcome to the server, ${member}! :smile:`);
 	member.guild.defaultChannel.send(`You can type \`${prefix}help\` at anytime to see my commands`);
 });
-bot.on("message", function(message){
+bot.on("message", (message) => {
 	checkForCommand(message);
 });
 bot.on("messageUpdate", function(oldMessage, newMessage){
