@@ -1,15 +1,21 @@
 require("dotenv").config();
+const fs = require("fs");
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
-const fs = require("fs");
 const google = require("googleapis");
 const youtube = google.youtube("v3");
 
-const bot = new Discord.Client();
+const client = new Discord.Client();
+client.commands = new Discord.Collection(); // const commands instead?
+
+fs.readdirSync("./commands").filter(file => file.endsWith(".js")).forEach(file => {
+	let command = require(`./commands/${file}`);
+	client.commands.set(command.name, command);
+});
+
 const prefix = "!";
 const botChannelName = "pica-commands";
 var botChannel;
-var fortunes = ["It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely of it", "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"];
 var dispatcher;
 var songQueue = [];
 var currentSongIndex = 0;
@@ -50,21 +56,6 @@ var commands = {
 			}
 		}
 	},
-	"bot": {
-		"usage": "",
-		"description": "Tells you information about the bot",
-		"process": function(message, args){
-			botChannel.send("I am a discord bot for didney worl who has an appetite for non-nutritive substances", {reply: message});
-			botChannel.send("If you have any suggestions or command ideas for me tell @Crumster or your local amin");
-		}
-	},
-	"ping": {
-		"usage": "",
-		"description": "Pings the bot, useful for seeing if it's alive",
-		"process": function(message, args){
-			botChannel.send("Pong :ping_pong:", {reply: message});
-		}
-	},
 	"roll": {
 		"usage": "<amount>d<sides>+<modifier>",
 		"description": "Rolls DnD style dice",
@@ -99,13 +90,6 @@ var commands = {
 					}
 				}
 			}
-		}
-	},
-	"8ball": {
-		"usage": "",
-		"description": "Asks a magic 8ball for a fortune",
-		"process": function(message, args){
-			botChannel.send(fortunes[Math.floor(Math.random() * fortunes.length)], {reply: message});
 		}
 	},
 	"save": {
@@ -338,9 +322,9 @@ var commands = {
 					}
 					if(currentSongIndex > songQueue.length - 1){
 						currentSongIndex = songQueue.length - 1;
-						//bot.user.setGame(currentSong.title);
+						//client.user.setGame(currentSong.title);
 						//Workaround since above wouldn't work
-						bot.user.setPresence({ game: { name: "", type: 0 } });
+						client.user.setPresence({ game: { name: "", type: 0 } });
 						message.member.voiceChannel.leave();
 						botChannel.send("Finished playing the song queue");
 					}
@@ -418,9 +402,9 @@ var commands = {
 					dispatcher.end("clear");
 					currentSongIndex = 0;
 					songQueue = [];
-					//bot.user.setGame(currentSong.title);
+					//client.user.setGame(currentSong.title);
 					//Workaround since above wouldn't work
-					bot.user.setPresence({ game: { name: "", type: 0 } });
+					client.user.setPresence({ game: { name: "", type: 0 } });
 					message.member.voiceChannel.leave();
 					botChannel.send("The song queue has been cleared", {reply: message});
 				}
@@ -503,7 +487,7 @@ var addSong = function(message, url){
 		song.user = message.author.username;
 		songQueue.push(song);
 		botChannel.send(`I have added \`${info.title}\` to the song queue! :headphones:`, {reply: message});
-		if(!bot.voiceConnections.exists("channel", message.member.voiceChannel)){
+		if(!client.voiceConnections.exists("channel", message.member.voiceChannel)){
 			message.member.voiceChannel.join().then(function(connection){
 				playSong(message, connection);
 			}).catch(console.log);
@@ -523,56 +507,56 @@ var playSong = function(message, connection){
 	var stream = ytdl(currentSong.url, {"filter": "audioonly"});
 	dispatcher = connection.playStream(stream);
 	botChannel.send(`Now ${(shuffle) ? "randomly " : ""}playing \`${currentSong.title}\` :musical_note:, added by ${currentSong.user}`);
-	//bot.user.setGame(currentSong.title);
+	//client.user.setGame(currentSong.title);
 	//Workaround since above wouldn't work
-	bot.user.setPresence({ game: { name: currentSong.title, type: 0 } });
+	client.user.setPresence({ game: { name: currentSong.title, type: 0 } });
 	dispatcher.player.on("warn", console.warn);
 	dispatcher.on("warn", console.warn);
 	dispatcher.on("error", console.error);
-	dispatcher.once("end", function(reason){
+	dispatcher.once("end", reason => {
 		console.log("Song ended because: " + reason);
 		if(reason === "user" || reason === "Stream is not generating quickly enough."){
 			if(autoremove){
 				songQueue.splice(currentSongIndex, 1);
 				if(songQueue.length === 0){
-					//bot.user.setGame(currentSong.title);
+					//client.user.setGame(currentSong.title);
 					//Workaround since above wouldn't work
-					bot.user.setPresence({ game: { name: "", type: 0 } });
+					client.user.setPresence({ game: { name: "", type: 0 } });
 					message.member.voiceChannel.leave();
 				} else{
-					setTimeout(function(){
+					setTimeout(() => {
 						playSong(message, connection);
 					}, 500);
 				}
 			} else{
 				currentSongIndex++;
 				if(currentSongIndex >= songQueue.length && !shuffle){
-					//bot.user.setGame(currentSong.title);
+					//client.user.setGame(currentSong.title);
 					//Workaround since above wouldn't work
-					bot.user.setPresence({ game: { name: "", type: 0 } });
+					client.user.setPresence({ game: { name: "", type: 0 } });
 					message.member.voiceChannel.leave();
 					botChannel.send("Finished playing the song queue");
 				} else{
-					setTimeout(function(){
+					setTimeout(() => {
 						playSong(message, connection);
 					}, 500);
 				}
 			}
 		} else if(reason === "prev" || reason === "next" || reason === "goto" || reason === "random"){
-			setTimeout(function(){
+			setTimeout(() => {
 				playSong(message, connection);
 			}, 500);
 		}
 	});
 }
 
-var checkForCommand = function(message){
+var checkForCommand = message => {
 	if(!botChannel){
 		botChannel = message.guild.channels.find("name", botChannelName);
 	}
-	if(!message.author.bot && message.content.startsWith(prefix)){
+	if(!message.author.client && message.content.startsWith(prefix)){
 		if(botChannel){
-			var args = message.content.substring(1).split(" ");
+			var args = message.content.substring(1).split(/ +/);
 			var command = args.splice(0, 1);
 			try{
 				commands[command].process(message, args);
@@ -584,7 +568,7 @@ var checkForCommand = function(message){
 			message.channel.send(`Please create a \`${botChannelName}\` channel`);
 		}
 	}
-	if(!message.author.bot){
+	if(!message.author.client){
 		var temp = "";
 		if(message.content.substring(0, 3).toLowerCase() === "im "){
 			temp = message.content.substring(3);
@@ -597,34 +581,60 @@ var checkForCommand = function(message){
 	}
 }
 
-bot.once("ready", () => {
+client.once("ready", () => {
 	console.log("Bot ready");
 });
 
-bot.on("disconnect", function(){
+client.on("disconnect", () => {
 	console.log("Bot disconnected");
 	process.exit(1);
 });
-bot.on("guildMemberAdd", function(member){
+
+client.on("guildMemberAdd", member => {
 	member.guild.defaultChannel.send(`Welcome to the server, ${member}! :smile:`);
-	member.guild.defaultChannel.send(`You can type \`${prefix}help\` at anytime to see my commands`);
-});
-bot.on("message", (message) => {
-	checkForCommand(message);
-});
-bot.on("messageUpdate", function(oldMessage, newMessage){
-	checkForCommand(newMessage);
+	member.guild.defaultChannel.send(`You can type \`${prefix}help\` to see my commands`);
 });
 
-bot.login(process.env.BOTTOKEN).then(function(){
+client.on("message", message => {
+	// Check if message is a command and not from bot
+	if(!message.content.startsWith(prefix) || message.author.bot) return;
+
+	// Parse command and args
+	const args = message.content.slice(prefix.length).split(/ +/);
+	const commandName = args.shift().toLowerCase();
+	const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+
+	// Check if command exists
+	if(!command){
+		message.reply("Sorry, that isn't a command yet :sob:");
+		message.channel.send(`You can type \`${prefix}help\` to see my commands`);
+		return;
+	}
+
+	// Check for required args
+	if(command.args && !args.length){
+		message.reply(`The usage for that command is \`${prefix}${command.name} ${command.usage}\``);
+		return;
+	}
+
+	// Try to run command
+	try {
+		command.run(message, args);
+	} catch(error) {
+		console.error(error);
+		message.reply("Sorry, there was an error trying to run that command :sob:");
+	}
+});
+
+client.login(process.env.BOTTOKEN).then(() => {
 	console.log("Bot logged in");
 }).catch(console.log);
 
-fs.readFile("save.json", function(err, data){
+fs.readFile("save.json", (err, data) => {
 	if(err){
 		if(err.code === "ENOENT"){
 			console.log("save.json does not exist");
-			fs.writeFile("save.json", "{}", "utf8", function(err){
+			fs.writeFile("save.json", "{}", "utf8", err => {
 				if(err) throw err;
 				console.log("save.json created");
 			});

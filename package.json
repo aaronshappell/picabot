@@ -20,7 +20,7 @@
     "eslint": "^5.16.0"
   },
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.0.0",
     "googleapis": "^40.0.0",
     "node-opus": "^0.3.2",
