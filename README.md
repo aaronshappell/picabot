@@ -15,13 +15,12 @@ You can run the bot with `node ./` from within the project directory. It will pr
 ### Heroku
 Make sure you have set your config variables in heroku (environment variables) with your bot token and google api key as `BOTTOKEN` and `GOOGLEAPIKEY` respectively. You also need to add a [ffmpeg buildpack](https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest) to your project for voice to work.  
 You can run the bot by pushing to your remote heroku repository or on the website. Doing so will automatically install the necessary dependencies for your dyno instance. On the resources tab of your heroku app turn off the web dyno and turn on the worker dyno. You can check the log with `heroku logs --tail` to verify that your bot is running and you will see `Bot ready`.  
-**Note:** messages saved with the `save` command will not be permanently saved due to heroku's ephemeral file system and the dyno lifecycle.
 ### Google Compute Engine
 Soon to come...
 
 ## Commands
 ### Current Commands
-`!help <command> | -a or --all`: Gives you a list of commands you can use or details on specific command(s)  
+`!help <command>`: Gives you a list of commands or how to use a specific command  
 `!bot`: Tells you information about the bot  
 `!ping`: Pings the bot, useful for seeing if it's alive  
 `!roll <amount>d<sides>+<modifier>`: Rolls DnD style dice  
@@ -41,11 +40,13 @@ Soon to come...
 `!music`: Gives you a list of the songs currently in the queue  
 ### Planned Commands
 `!insult`: Call the bot to your voice channel to deliver a special insult  
-`!weather`: Gives you the current weather
-`!pat`: Pat pica and commend him for his efforts
+`!weather`: Gives you the current weather  
+`!pat`: Pat pica and commend him for his efforts  
 ### Example Command
 A command must have at least a name, description, and run function. Optionally usage, args, and aliases can also be specified.
 ```
+// example.js file in commands folder
+
 // Other varibles or functions
 const example = 1;
 

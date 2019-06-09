@@ -56,42 +56,6 @@ var commands = {
 			}
 		}
 	},
-	"roll": {
-		"usage": "<amount>d<sides>+<modifier>",
-		"description": "Rolls DnD style dice",
-		"process": function(message, args){
-			if(Math.floor(Math.random() * 100 + 1) === 1){
-				botChannel.send("You tried to roll a `die` :game_die: and got: `rick`", {reply: message});
-				botChannel.send("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-				return;
-			}
-			if(args.length === 0){
-				botChannel.send(`You rolled \`1d6\` :game_die: and got: \`${Math.floor(Math.random() * 6 + 1)}\``, {reply: message});
-			} else{
-				for(var i = 0; i < args.length; i++){
-					var regex = args[i].match(/^(\d*)d(\d+)\+?(\d*)$/);
-					if(regex === null){
-						botChannel.send(`\`${args[i]}\` is not a valid die`, {reply: message});
-					} else{
-						if(regex[1] === "") regex[1] = 1;
-						if(regex[3] === "") regex[3] = 0;
-						var rolls = "(";
-						var roll;
-						var sum = 0;
-						for(var j = 0; j < regex[1] - 1; j++){
-							roll = Math.floor(Math.random() * Number.parseInt(regex[2]) + 1);
-							sum += roll;
-							rolls += roll + ", ";
-						}
-						roll = Math.floor(Math.random() * Number.parseInt(regex[2]) + 1);
-						sum += roll;
-						rolls += roll + ") + " + regex[3] + " = " + (sum + Number.parseInt(regex[3]));
-						message.channel.send(`You rolled \`${args[i]}\` :game_die: and got: \`${rolls}\``, {reply: message});
-					}
-				}
-			}
-		}
-	},
 	"insult": {
 		"usage": "",
 		"description": "(NOT DONE) Call the bot to your voice channel to deliver a special insult",
