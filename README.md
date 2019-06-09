@@ -26,10 +26,6 @@ Soon to come...
 `!ping`: Pings the bot, useful for seeing if it's alive  
 `!roll <amount>d<sides>+<modifier>`: Rolls DnD style dice  
 `!8ball`: Asks a magic 8ball for a fortune  
-`!save <key> <message>`: Saves a personalized message with a given key  
-`!recall <key>`: Lists your saved messages or recalls a saved message with a given key  
-`!delete <key>`: Deletes a saved message with a given key  
-`!insult`: (NOT DONE) Call the bot to your voice channel to deliver a special insult  
 `!addsong <link>`: Adds a song to the song queue via a youtube link  
 `!yt <query>`: Searches for a youtube video to add to the song queue  
 `!play`: Resumes the current song  
@@ -43,14 +39,30 @@ Soon to come...
 `!autoremove`: Toggles autoremoving songs of the song queue  
 `!song`: Gives you information about the currently playing song  
 `!music`: Gives you a list of the songs currently in the queue  
+### Planned Commands
+`!insult`: Call the bot to your voice channel to deliver a special insult  
+`!weather`: Gives you the current weather
+`!pat`: Pat pica and commend him for his efforts
 ### Example Command
-A command in the commands object consists of three parts: usage, description, and its process.
+A command must have at least a name, description, and run function. Optionally usage, args, and aliases can also be specified.
 ```
-"command": {
-    "usage": "<argument>",
-    "description": "Describes what the command does",
-    "process": function(message, args){
-        //Do stuff here
-    }
+// Other varibles or functions
+const example = 1;
+
+function examplePlus(){
+    return example + 1;
 }
+
+// Exported command object
+module.exports = {
+    name: "<name>"
+    description: "Describes what the command does",
+    usage: "<argument>", // Optional
+    args: true, // Optional, requires user to enter arguments
+    aliases: ["alias1", "alias2"], // Optional
+    run: (message, args) => {
+        // Do stuff here
+        message.reply(`example + 1 is ${examplePlus()}`);
+    }
+};
 ```

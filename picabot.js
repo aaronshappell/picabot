@@ -92,100 +92,6 @@ var commands = {
 			}
 		}
 	},
-	"save": {
-		"usage": "<key> <message>",
-		"description": "Saves a personalized message with a given key",
-		"process": function(message, args){
-			botChannel.send("**Disclaimer:** your message will not be permanantly saved and will delete upon bot restart (for now)", {reply: message});
-			if(args.length < 2){
-				botChannel.send(`Save a message with \`${prefix}save <key> <message>\``, {reply: message});
-				return;
-			}
-			var key = args[0];
-			var messageToSave = "";
-			for(var i = 0; i < args.length - 2; i++){
-				messageToSave += args[i + 1] + " ";
-			}
-			messageToSave += args[args.length - 1];
-			fs.readFile("save.json", "utf8", function(err, data){
-				if(err) throw err;
-				var save = JSON.parse(data);
-				if(save[message.author.username] === undefined){
-					save[message.author.username] = {};
-				}
-				save[message.author.username][key] = messageToSave;
-				fs.writeFile("save.json", JSON.stringify(save), "utf8", function(err){
-					if(err) throw err;
-					botChannel.send(`Your message has been saved as \`${key}\`! :tada:`, {reply: message});
-				});
-			});
-		}
-	},
-	"recall": {
-		"usage": "<key>",
-		"description": "Lists your saved messages or recalls a saved message with a given key",
-		"process": function(message, args){
-			fs.readFile("save.json", "utf8", function(err, data){
-				if(err) throw err;
-				var save = JSON.parse(data);
-				if(args.length === 0){
-					var messageKeys;
-					var savedMessages = "";
-					try{
-						messageKeys = Object.keys(save[message.author.username]);
-					} catch(e){
-						botChannel.send("You have no saved messages, try saving one!", {reply: message});
-						return;
-					}
-					if(messageKeys.length === 0){
-						botChannel.send("You have no saved messages, try saving one!", {reply: message});
-						return;
-					}
-					for(var i = 0; i < messageKeys.length - 1; i++){
-						savedMessages += messageKeys[i] + ", ";
-					}
-					savedMessages += messageKeys[messageKeys.length - 1];
-					botChannel.send("Your saved messages are: " + savedMessages, {reply: message});
-				} else{
-					var key = args[0];
-					var recalledMessage;
-					try{
-						recalledMessage = save[message.author.username][key];
-					} catch(e){
-						botChannel.send(`You don't have a saved message with the key \`${key}\``, {reply: message});
-						return;
-					}
-					botChannel.send(recalledMessage, {reply: message});
-				}
-			});
-		}
-	},
-	"delete": {
-		"usage": "<key>",
-		"description": "Deletes a saved message with a given key",
-		"process": function(message, args){
-			fs.readFile("save.json", "utf8", function(err, data){
-				if(err) throw err;
-				var save = JSON.parse(data);
-				if(args.length === 0){
-					botChannel.send(`Delete a saved message with \`${prefix}delete <key>\``, {reply: message});
-					return;
-				} else{
-					var key = args[0];
-					try{
-						delete save[message.author.username][key];
-					} catch(e){
-						botChannel.send(`You don't have a saved message with the key \`${key}\``, {reply: message});
-						return;
-					}
-					fs.writeFile("save.json", JSON.stringify(save), "utf8", function(err){
-						if(err) throw err;
-						botChannel.send(`Your message \`${key}\` has been deleted! :tada:`, {reply: message});
-					});
-				}
-			});
-		}
-	},
 	"insult": {
 		"usage": "",
 		"description": "(NOT DONE) Call the bot to your voice channel to deliver a special insult",
@@ -479,7 +385,7 @@ var commands = {
 	}
 };
 
-var addSong = function(message, url){
+function addSong(message, url){
 	ytdl.getInfo(url).then(function(info){
 		var song = {};
 		song.title = info.title;
@@ -497,7 +403,7 @@ var addSong = function(message, url){
 	});
 }
 
-var playSong = function(message, connection){
+function playSong(message, connection){
 	if(shuffle){
 		do {
 			currentSongIndex = Math.floor(Math.random() * songQueue.length);
@@ -550,7 +456,7 @@ var playSong = function(message, connection){
 	});
 }
 
-var checkForCommand = message => {
+function checkForCommand(message){
 	if(!botChannel){
 		botChannel = message.guild.channels.find("name", botChannelName);
 	}
@@ -629,17 +535,3 @@ client.on("message", message => {
 client.login(process.env.BOTTOKEN).then(() => {
 	console.log("Bot logged in");
 }).catch(console.log);
-
-fs.readFile("save.json", (err, data) => {
-	if(err){
-		if(err.code === "ENOENT"){
-			console.log("save.json does not exist");
-			fs.writeFile("save.json", "{}", "utf8", err => {
-				if(err) throw err;
-				console.log("save.json created");
-			});
-		} else{
-			throw err;
-		}
-	}
-});
