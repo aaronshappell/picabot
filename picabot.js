@@ -4,17 +4,17 @@ const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
 const google = require("googleapis");
 const youtube = google.youtube("v3");
+const {prefix, botChannelName} = require("./config.json");
 
 const client = new Discord.Client();
-client.commands = new Discord.Collection(); // const commands instead?
+client.commands = new Discord.Collection();
 
+// Add command files
 fs.readdirSync("./commands").filter(file => file.endsWith(".js")).forEach(file => {
 	let command = require(`./commands/${file}`);
 	client.commands.set(command.name, command);
 });
 
-const prefix = "!";
-const botChannelName = "pica-commands";
 var botChannel;
 var dispatcher;
 var songQueue = [];
@@ -24,38 +24,6 @@ var shuffle = false;
 var autoremove = false;
 
 var commands = {
-	"help": {
-		"usage": "<command> | -a or --all",
-		"description": "Gives you a list of commands you can use or details on specific command(s)",
-		"process": function(message, args){
-			var commandKeys = Object.keys(commands);
-			if(args.length === 0){
-				var commandList = "";
-				for(var i = 0; i < commandKeys.length - 1; i++){
-					commandList += `\`${commandKeys[i]}\`, `;
-				}
-				commandList += `and \`${commandKeys[commandKeys.length - 1]}\``;
-				botChannel.send("My current commands are: " + commandList, {reply: message});
-				botChannel.send(`You can use \`${prefix}help <command>\` to learn more about a command!`);
-			} else{
-				var helpList = "";
-				if(args[0] === "-a" || args[0] === "--all"){
-					for(var i = 0; i < commandKeys.length; i++){
-						helpList += `\`!${commandKeys[i]} ${commands[commandKeys[i]].usage}\`: ${commands[commandKeys[i]].description}\n`;
-					}
-				} else{
-					for(var i = 0; i < args.length; i++){
-						try{
-							helpList += `\`!${args[i]} ${commands[args[i]].usage}\`: ${commands[args[i]].description}\n`;
-						} catch(e){
-							helpList += `\`!${args[i]}\`: Not a command\n`;
-						}
-					}
-				}
-				botChannel.send(helpList, {reply: message});
-			}
-		}
-	},
 	"insult": {
 		"usage": "",
 		"description": "(NOT DONE) Call the bot to your voice channel to deliver a special insult",
