@@ -9,20 +9,20 @@ module.exports = {
         const commands = message.client.commands;
 
         if(!args.length){ // List avaiable commands
-            data.push("My current commands are: ");
-            data.push(commands.map(command => command.name).join(", "));
-            data.push(`\nYou can use \`${prefix}help <command>\` to learn more about a command!`);
+            data.push(`My current commands are: ${commands.map(command => command.name).join(", ")}`);
+            data.push(`You can use \`${prefix}help <command>\` to learn more about a command!`);
             message.reply(data);
-        } else { // Give usage of specific commands
-            for(let arg in args){
-                try{
-                    let command = commands.get(arg);
-                    data.push(`\`${prefix}${command.name} ${command.usage}\`: ${command.description}\n`);
-                } catch(error){
-                    data.push(`\`${prefix}${arg.toLowerCase()}\`: Not a command\n`);
+        } else { // Give usage/description of specific commands
+            for(let arg of args){
+                const commandName = arg.toLowerCase();
+                let command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+                if(command){
+                    data.push(`\`${prefix}${command.name}${command.usage ? " " + command.usage : ""}\`: ${command.description}`);
+                } else{
+                    data.push(`\`${prefix}${commandName}\`: Not a command`);
                 }
-                message.reply(data);
             }
+            message.reply(data);
         }
     }
 };

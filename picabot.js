@@ -2,8 +2,11 @@ require("dotenv").config();
 const fs = require("fs");
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
-const google = require("googleapis");
-const youtube = google.youtube("v3");
+const {google} = require("googleapis");
+const youtube = google.youtube({
+	version: "v3",
+	auth: process.env.GOOGLEAPIKEY
+});
 const {prefix, botChannelName} = require("./config.json");
 
 const client = new Discord.Client();
@@ -53,8 +56,7 @@ var commands = {
 						query += args[i] + " ";
 					}
 					query += " " + args[args.length - 1];
-					var results = youtube.search.list({
-						"key": process.env.GOOGLEAPIKEY,
+					youtube.search.list({
 						"q": query,
 						"type": "video",
 						"maxResults": "1",
@@ -390,7 +392,7 @@ function playSong(message, connection){
 
 function checkForCommand(message){
 	if(!botChannel){
-		botChannel = message.guild.channels.find("name", botChannelName);
+		botChannel = message.guild.channels.find(channel => channel.name === botChannelName);
 	}
 	if(!message.author.client && message.content.startsWith(prefix)){
 		if(botChannel){
@@ -444,14 +446,19 @@ client.on("message", message => {
 
 	// Check if command exists
 	if(!command){
-		message.reply("Sorry, that isn't a command yet :sob:");
-		message.channel.send(`You can type \`${prefix}help\` to see my commands`);
+		message.reply(`Sorry, that isn't a command yet :sob:\nYou can type \`${prefix}help\` to see my commands`);
 		return;
 	}
 
 	// Check for required args
 	if(command.args && !args.length){
 		message.reply(`The usage for that command is \`${prefix}${command.name} ${command.usage}\``);
+		return;
+	}
+
+	// Check for required voice
+	if(command.voice && message.member.voiceChannel === undefined){
+		message.reply("This command requires you to be in a voice channel.");
 		return;
 	}
 

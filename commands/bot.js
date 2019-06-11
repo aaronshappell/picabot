@@ -5,7 +5,7 @@ module.exports = {
     run: (message, args) => {
         const data = [];
         data.push("I am a discord bot for didney worl who has an appetite for non-nutritive substances");
-        data.push("\nIf you have any suggestions or command ideas for me tell @Crumster or your local amin");
+        data.push("If you have any suggestions or command ideas for me tell @Crumster or your local amin");
         message.reply(data);
     }
 };
