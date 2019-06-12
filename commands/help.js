@@ -13,7 +13,7 @@ module.exports = {
             data.push(`You can use \`${prefix}help <command>\` to learn more about a command!`);
             message.reply(data);
         } else { // Give usage/description of specific commands
-            for(let arg of args){
+            args.forEach(arg => {
                 const commandName = arg.toLowerCase();
                 let command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
                 if(command){
@@ -21,7 +21,7 @@ module.exports = {
                 } else{
                     data.push(`\`${prefix}${commandName}\`: Not a command`);
                 }
-            }
+            });
             message.reply(data);
         }
     }

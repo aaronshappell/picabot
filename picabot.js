@@ -7,7 +7,7 @@ const youtube = google.youtube({
 	version: "v3",
 	auth: process.env.GOOGLEAPIKEY
 });
-const {prefix, botChannelName} = require("./config.json");
+const {prefix, botChannelName, dad} = require("./config.json");
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -27,13 +27,6 @@ var shuffle = false;
 var autoremove = false;
 
 var commands = {
-	"insult": {
-		"usage": "",
-		"description": "(NOT DONE) Call the bot to your voice channel to deliver a special insult",
-		"process": function(message, args){
-			botChannel.send("There are currently no insults :sob:", {reply: message});
-		}
-	},
 	"addsong": {
 		"usage": "<link>",
 		"description": "Adds a song to the song queue via a youtube link",
@@ -394,31 +387,6 @@ function checkForCommand(message){
 	if(!botChannel){
 		botChannel = message.guild.channels.find(channel => channel.name === botChannelName);
 	}
-	if(!message.author.client && message.content.startsWith(prefix)){
-		if(botChannel){
-			var args = message.content.substring(1).split(/ +/);
-			var command = args.splice(0, 1);
-			try{
-				commands[command].process(message, args);
-			} catch(e){
-				botChannel.send("Sorry, that isn't a command yet :sob:", {reply: message});
-				botChannel.send(`You can type \`${prefix}help\` to see a list of my commands`);
-			}
-		} else{
-			message.channel.send(`Please create a \`${botChannelName}\` channel`);
-		}
-	}
-	if(!message.author.client){
-		var temp = "";
-		if(message.content.substring(0, 3).toLowerCase() === "im "){
-			temp = message.content.substring(3);
-		} else if(message.content.substring(0, 4).toLowerCase() === "i'm "){
-			temp = message.content.substring(4);
-		}
-		if(temp !== ""){
-			message.channel.send("Hi " + temp + ", I'm dad.", {reply: message});
-		}
-	}
 }
 
 client.once("ready", () => {
@@ -436,6 +404,14 @@ client.on("guildMemberAdd", member => {
 });
 
 client.on("message", message => {
+	// Daddy pica
+	if(dad && !message.author.bot){
+		const im = message.content.substring(0, 4).match(/[iI]'?[mM] /);
+		if(im.length){
+			message.reply(`Hi ${message.content.substring(im[0].length)}, I'm dad.`);
+		}
+	}
+
 	// Check if message is a command and not from bot
 	if(!message.content.startsWith(prefix) || message.author.bot) return;
 

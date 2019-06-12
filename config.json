@@ -1,4 +1,5 @@
 {
     "prefix": "!",
-    "botChannelName": "pica-commands"
+    "botChannelName": "pica-commands",
+    "dad": true
 }

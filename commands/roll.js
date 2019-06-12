@@ -9,7 +9,7 @@ module.exports = {
             message.channel.send("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
             return;
         }
-        for(let arg of args){
+        args.forEach(arg => {
             let regex = arg.match(/^(\d*)d(\d+)\+?(\d*)$/);
             if(regex === null){
                 message.reply(`\`${arg}\` is not a valid die`);
@@ -29,6 +29,6 @@ module.exports = {
                 rolls += roll + ") + " + regex[3] + " = " + (sum + Number.parseInt(regex[3]));
                 message.reply(`You rolled \`${arg}\` :game_die: and got: \`${rolls}\``);
             }
-        }
+        });
     }
 };
