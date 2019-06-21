@@ -1,12 +1,7 @@
 require("dotenv").config();
 const fs = require("fs");
 const Discord = require("discord.js");
-const ytdl = require("ytdl-core");
-const {google} = require("googleapis");
-const youtube = google.youtube({
-	version: "v3",
-	auth: process.env.GOOGLEAPIKEY
-});
+
 const {prefix, botChannelName, dad} = require("./config.json");
 
 const client = new Discord.Client();
@@ -27,17 +22,6 @@ var shuffle = false;
 var autoremove = false;
 
 var commands = {
-	"addsong": {
-		"usage": "<link>",
-		"description": "Adds a song to the song queue via a youtube link",
-		"process": function(message, args){
-			if(message.member.voiceChannel !== undefined){
-				addSong(message, args[0]);
-			} else{
-				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
-			}
-		}
-	},
 	"yt": {
 		"usage": "<query>",
 		"description": "Searches for a youtube video to add to the song queue",
@@ -399,6 +383,7 @@ client.on("disconnect", () => {
 });
 
 client.on("guildMemberAdd", member => {
+	// These lines wont work anymore, defaultChannel was removed.
 	member.guild.defaultChannel.send(`Welcome to the server, ${member}! :smile:`);
 	member.guild.defaultChannel.send(`You can type \`${prefix}help\` to see my commands`);
 });
@@ -407,7 +392,7 @@ client.on("message", message => {
 	// Daddy pica
 	if(dad && !message.author.bot){
 		const im = message.content.substring(0, 4).match(/[iI]'?[mM] /);
-		if(im.length){
+		if(im){
 			message.reply(`Hi ${message.content.substring(im[0].length)}, I'm dad.`);
 		}
 	}
@@ -433,7 +418,7 @@ client.on("message", message => {
 	}
 
 	// Check for required voice
-	if(command.voice && message.member.voiceChannel === undefined){
+	if(command.voice && !message.member.voice.channel){
 		message.reply("This command requires you to be in a voice channel.");
 		return;
 	}

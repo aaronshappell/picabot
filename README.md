@@ -25,7 +25,6 @@ Soon to come...
 `!ping`: Pings the bot, useful for seeing if it's alive  
 `!roll <amount>d<sides>+<modifier>`: Rolls DnD style dice  
 `!8ball`: Asks a magic 8ball for a fortune  
-`!addsong <link>`: Adds a song to the song queue via a youtube link  
 `!yt <query>`: Searches for a youtube video to add to the song queue  
 `!play`: Resumes the current song  
 `!pause`: Pauses the current song  
@@ -47,7 +46,7 @@ A command must have at least a name, description, and run function. Optionally u
 ```
 // example.js file in commands folder
 
-// Other varibles or functions
+// Local variables or functions
 const example = 1;
 
 function examplePlus(){
