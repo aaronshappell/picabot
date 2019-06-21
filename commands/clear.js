@@ -6,6 +6,6 @@ module.exports = {
     usage: "<index>",
     voice: true,
     run: (message, args) => {
-        console.log(music_manager.addSong());
+        
     }
 };

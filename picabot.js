@@ -263,36 +263,6 @@ var commands = {
 				botChannel.send("You can't hear my music if you're not in a voice channel :cry:", {reply: message});
 			}
 		}
-	},
-	"song": {
-		"usage": "",
-		"description": "Gives you information about the currently playing song",
-		"process": function(message, args){
-			if(songQueue.length > 0){
-				botChannel.send(`The current song is \`${songQueue[currentSongIndex].title}\` :musical_note:, added by ${songQueue[currentSongIndex].user}`, {reply: message});
-			} else{
-				botChannel.send("No song is in the queue", {reply: message});
-			}
-		}
-	},
-	"music": {
-		"usage": "",
-		"description": "Gives you a list of the songs currently in the queue",
-		"process": function(message, args){
-			if(songQueue.length > 0){
-				var songList = "";
-				for(var i = 0; i < songQueue.length; i++){
-					if(i === currentSongIndex){
-						songList += `__**\`${i + 1}. ${songQueue[i].title}\`**__\n`;
-					} else{
-						songList += `\`${i + 1}. ${songQueue[i].title}\`\n`;
-					}
-				}
-				botChannel.send("The song queue currently has:\n" + songList, {reply: message});
-			} else{
-				botChannel.send("No song is in the queue", {reply: message});
-			}
-		}
 	}
 };
 

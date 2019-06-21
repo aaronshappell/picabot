@@ -26,17 +26,17 @@ Soon to come...
 `!roll <amount>d<sides>+<modifier>`: Rolls DnD style dice  
 `!8ball`: Asks a magic 8ball for a fortune  
 `!yt <query>`: Searches for a youtube video to add to the song queue  
+`!song`: Gives you information about the currently playing song  
+`!music`: Gives you a list of the songs currently in the queue  
 `!play`: Resumes the current song  
 `!pause`: Pauses the current song  
 `!prev <amount>`: Skips back in the queue by a certain amount of songs  
 `!next <amount>`: Skips ahead in the queue by a certain amount of songs  
+`!clear <index>`: Clears the song queue or a specific song in the queue  
 `!goto <index>`: Skips to a certain song in the queue by its index  
 `!random`: Chooses a random song from the queue to play.  
-`!clear <index>`: Clears the song queue or a specific song in the queue  
 `!shuffle`: Toggles shuffling of the song queue  
 `!autoremove`: Toggles autoremoving songs of the song queue  
-`!song`: Gives you information about the currently playing song  
-`!music`: Gives you a list of the songs currently in the queue  
 ### Planned Commands
 `!insult`: Call the bot to your voice channel to deliver a special insult  
 `!weather`: Gives you the current weather  
