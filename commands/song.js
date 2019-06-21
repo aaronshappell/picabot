@@ -1,4 +1,4 @@
-const music_manager = require("../music_manager");
+const music_manager = require("../util/music_manager");
 
 module.exports = {
     name: "song",

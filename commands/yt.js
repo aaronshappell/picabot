@@ -3,7 +3,7 @@ const youtube = google.youtube({
 	version: "v3",
 	auth: process.env.GOOGLEAPIKEY
 });
-const music_manager = require("../music_manager");
+const music_manager = require("../util/music_manager");
 
 module.exports = {
     name: "yt",
