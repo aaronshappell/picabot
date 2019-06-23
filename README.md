@@ -10,7 +10,7 @@ How to install and run picabot for various systems/hosting options.
 The google api key isn't necessary but is required for the `yt` command to work.
 ### Locally
 First install nodejs and npm. Download them for your system [here](https://nodejs.org/en/download/).  
-You can then install the bot by cloning the git repo with `git clone https://github.com/aaronshappell/picabot.git`. Then you must install the necessary dependencies with `npm install` in the project directory. You will also need a `config.json` file for general bot configuration such as specifying the command prefix and bot channel. For sensitive information (tokens/keys), make sure you have a `.env` file with your bot token and google api key as `BOTTOKEN` and `GOOGLEAPIKEY` respectively. See [example.env](https://github.com/aaronshappell/picabot/blob/master/example.env) for details.  
+You can then install the bot by cloning the git repo with `git clone https://github.com/aaronshappell/picabot.git`. Then you must install the necessary dependencies with `npm install` from within the project directory. You will also need a `config.json` file for general bot configuration such as specifying the command prefix and bot channel. For sensitive information (tokens/keys), make sure you have a `.env` file with your bot token and google api key as `BOTTOKEN` and `GOOGLEAPIKEY` respectively. See [example.env](https://github.com/aaronshappell/picabot/blob/master/example.env) for details.  
 You can run the bot with `node ./` from within the project directory. It will print `Bot ready` when the bot is ready to recieve commands.
 ### Heroku
 Make sure you have set your config variables in heroku (environment variables) with your bot token and google api key as `BOTTOKEN` and `GOOGLEAPIKEY` respectively. You also need to add a [ffmpeg buildpack](https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest) to your project for voice to work.  
@@ -59,7 +59,8 @@ module.exports = {
     description: "Describes what the command does",
     usage: "<argument>", // Optional
     args: true, // Optional, requires user to enter arguments
-    aliases: ["alias1", "alias2"], // Optional
+    voice: true, // Optional, requires user to be in voice channel to use command
+    aliases: ["alias1", "alias2"], // Optional, aliases for the command
     run: (message, args) => {
         // Do stuff here
         message.reply(`example + 1 is ${examplePlus()}`);

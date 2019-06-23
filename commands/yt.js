@@ -9,6 +9,7 @@ module.exports = {
     name: "yt",
     description: "Searches for a youtube video or via a youtube link to add to the song queue",
     usage: "<query>",
+    aliases: ["youtube"],
     args: true,
     voice: true,
     run: (message, args) => {
@@ -19,10 +20,10 @@ module.exports = {
         // Search youtube for query
         const query = args.join(" ");
         youtube.search.list({
-            "q": query,
-            "type": "video",
-            "maxResults": "1",
-            "part": "snippet"
+            q: query,
+            type: "video",
+            maxResults: "1",
+            part: "snippet"
         }).then(res => {
             console.log(res.data);
             if(res.data.items.length){
