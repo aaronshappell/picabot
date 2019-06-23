@@ -13,7 +13,8 @@ module.exports = {
                     data[song.index] = `__**${data[song.index]}**__`;
                 }
             });
-            message.reply(`The song queue currently has:\n${data}`);
+            data.unshift("The song queue currently has:");
+            message.reply(data);
         } else {
             message.reply("No music is in the queue");
         }

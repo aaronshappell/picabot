@@ -7,3 +7,5 @@ class Song {
         this.index = index;
     }
 }
+
+module.exports = Song;

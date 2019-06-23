@@ -25,7 +25,6 @@ module.exports = {
             maxResults: "1",
             part: "snippet"
         }).then(res => {
-            console.log(res.data);
             if(res.data.items.length){
                 music_manager.addSong(message, res.data.items[0].id.videoId);
             } else {
