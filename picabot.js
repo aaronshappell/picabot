@@ -359,6 +359,9 @@ client.on("guildMemberAdd", member => {
 });
 
 client.on("message", message => {
+	// Ignore DMs
+	if(!message.guild) return;
+
 	// Daddy pica
 	if(dad && !message.author.bot){
 		const im = message.content.substring(0, 4).match(/[iI]'?[mM] /);

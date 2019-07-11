@@ -16,23 +16,24 @@ module.exports = {
         // Check for link
         if(args[0].startsWith("https://")){
             music_manager.addSong(message, args[0]);
+        } else {
+            // Search youtube for query
+            const query = args.join(" ");
+            youtube.search.list({
+                q: query,
+                type: "video",
+                maxResults: "1",
+                part: "snippet"
+            }).then(res => {
+                if(res.data.items.length){
+                    music_manager.addSong(message, res.data.items[0].id.videoId);
+                } else {
+                    message.reply(`There were no results for \`${query}\``);
+                }
+            }).catch(error => {
+                console.error(error);
+                message.reply("There was an error searching for your song :sob:");
+            });
         }
-        // Search youtube for query
-        const query = args.join(" ");
-        youtube.search.list({
-            q: query,
-            type: "video",
-            maxResults: "1",
-            part: "snippet"
-        }).then(res => {
-            if(res.data.items.length){
-                music_manager.addSong(message, res.data.items[0].id.videoId);
-            } else {
-                message.reply(`There were no results for \`${query}\``);
-            }
-        }).catch(error => {
-            console.error(error);
-            message.reply("There was an error searching for your song :cry:");
-        });
     }
 };

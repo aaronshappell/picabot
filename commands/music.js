@@ -7,10 +7,11 @@ module.exports = {
     run: (message, args) => {
         if(music_manager.songQueue.length){
             const data = [];
-            music_manager.songQueue.forEach(song => {
-                data.push(`\`${song.index + 1}. ${song.title}\``);
-                if(song.index == music_manager.currentSong.index){
-                    data[song.index] = `__**${data[song.index]}**__`;
+            console.log(music_manager.songQueue);
+            music_manager.songQueue.forEach((song, index) => {
+                data.push(`\`${index + 1}. ${song.title}\``);
+                if(index === music_manager.currentSongIndex){
+                    data[index] = `__**${data[index]}**__`;
                 }
             });
             data.unshift("The song queue currently has:");
