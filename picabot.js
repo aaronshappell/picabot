@@ -231,24 +231,21 @@ var commands = {
 						query += args[i] + " ";
 					}
 					query += " " + args[args.length - 1];
-					var results = youtube.search.list({
-						"key": process.env.GOOGLEAPIKEY,
-						"q": query,
-						"type": "video",
-						"maxResults": "1",
-						"part": "snippet"
-					}, function(err, data){
-						if(err){
-							botChannel.send("There was an error searching for your song :cry:", {reply: message});
-							console.log("Error: " + err);
+					youtube.search.list({
+						key: process.env.GOOGLEAPIKEY,
+						q: query,
+						type: "video",
+						maxResults: "1",
+						part: "snippet"
+					}).then(res => {
+						if(res.data.items.length){
+							addSong(message, "https://www.youtube.com/watch?v=" + res.data.items[0].id.videoId);
+						} else {
+							message.reply(`There were no results for \`${query}\``);
 						}
-						if(data){
-							if(data.items.length === 0){
-								botChannel.send(`There were no results for \`${query}\``);
-							} else{
-								addSong(message, "https://www.youtube.com/watch?v=" + data.items[0].id.videoId);
-							}
-						}
+					}).catch(error => {
+						botChannel.send("There was an error searching for your song :cry:", {reply: message});
+						console.log("Error: " + err);
 					});
 				} else{
 					botChannel.send(`You can search for a youtube song with \`${prefix}yt <query>\``, {reply: message});
