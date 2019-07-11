@@ -22,8 +22,8 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
-    "googleapis": "^40.0.0",
+    "googleapis": "^40.0.1",
     "node-opus": "^0.3.2",
-    "ytdl-core": "^0.29.2"
+    "ytdl-core": "^0.29.3"
   }
 }

@@ -2,7 +2,7 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
 const fs = require("fs");
-const google = require("googleapis");
+const {google} = require("googleapis");
 const youtube = google.youtube("v3");
 
 const bot = new Discord.Client();
