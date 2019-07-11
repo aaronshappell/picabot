@@ -1,9 +1,9 @@
-const music_manager = require("../util/music_manager");
+const music_manager = require('../util/music_manager');
 
 module.exports = {
-    name: "music",
-    description: "Gives you a list of the songs currently in the queue",
-    aliases: ["queue", "songs"],
+    name: 'music',
+    description: 'Gives you a list of the songs currently in the queue',
+    aliases: ['queue', 'songs'],
     run: (message, args) => {
         if(music_manager.songQueue.length){
             const data = [];
@@ -14,10 +14,10 @@ module.exports = {
                     data[index] = `__**${data[index]}**__`;
                 }
             });
-            data.unshift("The song queue currently has:");
+            data.unshift('The song queue currently has:');
             message.reply(data);
         } else {
-            message.reply("No music is in the queue");
+            message.reply('No music is in the queue');
         }
     }
 };
